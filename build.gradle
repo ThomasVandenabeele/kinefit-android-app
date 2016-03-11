@@ -1,0 +1,30 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:1.5.0'
+    }
+}
+apply plugin: 'com.android.application'
+apply plugin: 'idea'
+
+android {
+    compileSdkVersion 'android-22'
+    buildToolsVersion '23.0.2'
+
+    buildTypes {
+        release {
+//            runProguard false
+//            proguardFile getDefaultProguardFile('proguard-android.txt')
+        }
+    }
+}
+
+repositories {
+    jcenter()
+}
+
+dependencies {
+    compile 'joda-time:joda-time:2.9.2'
+}
