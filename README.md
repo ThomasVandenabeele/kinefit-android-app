@@ -1,5 +1,2 @@
-Repositorie van Thomas Vandenabeele
-=======
-
-Hello World, Thomas!
------------
+#Repositorie van Thomas Vandenabeele
+##Hello World
