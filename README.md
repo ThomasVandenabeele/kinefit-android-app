@@ -4,7 +4,7 @@
 
 Voor de taak van *Android Appontwikkeling* zou ik graag een applicatie maken die hoofdzakelijk kan dienen als **pedometer**.
 Mijn vader is docent bij de *faculteit geneeskunde* aan de UHasselt en geeft les bij *Revalidatiewetenschappen en kinesitherapie*.
-Ze willen voor hun onderzoek een applicatie ontwikkelen die kan dienen voor de trainingen van de deelnemers van hun onderzoek.
+Ze willen voor hun onderzoek graag een applicatie laten ontwikkelen die kan dienen voor de trainingen van de deelnemers van hun onderzoek.
 
 ---
 
