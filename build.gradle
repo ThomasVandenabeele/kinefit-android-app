@@ -13,10 +13,16 @@ android {
     compileSdkVersion 'android-22'
     buildToolsVersion '23.0.2'
 
+    defaultConfig {
+        applicationId "be.fiiw.appi.oefening1"
+        minSdkVersion 19
+        targetSdkVersion 22
+        versionCode 1
+        versionName "1.0"
+    }
+ 
     buildTypes {
         release {
-//            runProguard false
-//            proguardFile getDefaultProguardFile('proguard-android.txt')
         }
     }
 }
