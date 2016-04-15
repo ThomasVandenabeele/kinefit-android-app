@@ -28,7 +28,7 @@ public class MainActivity extends Activity
         super.onStart();
         LocalTime currentTime = new LocalTime();
         TextView textView = (TextView) findViewById(R.id.text_view);
-        textView.setText("The current local time is: " + currentTime);
+        textView.setText("The current local time is now: " + currentTime);
 
         teller++;
         Log.d(TAG, "onStart()");
