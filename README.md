@@ -1,5 +1,7 @@
-#Repositorie van Thomas Vandenabeele
 
+Repositorie van Thomas Vandenabeele
+=======
+ 
 ##Pedometer / revalidatie applicatie 
 
 Voor de taak van *Android Appontwikkeling* zou ik graag een applicatie maken die hoofdzakelijk kan dienen als **pedometer**.
