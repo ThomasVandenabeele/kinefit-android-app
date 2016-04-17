@@ -17,3 +17,12 @@ Optioneel kan ik ook een kleine web-based applicatie maken waarmee de onderzoeke
 ---
 
 Deze applicatie zou dan kunnen dienen als voorbeeld wat de mogelijkheden zijn van een smartphone applicatie voor hun onderzoek.
+
+___
+
+Reeds functionerende features:
+* REST connectie met webserver (PHP & mysql)
+* Eigen thema
+* Login scherm + methode
+* Sensor_Step_Counter API
+* StepActivity
