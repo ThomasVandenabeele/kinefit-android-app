@@ -33,4 +33,5 @@ repositories {
 
 dependencies {
     compile 'joda-time:joda-time:2.9.2'
+    compile 'com.google.android.gms:play-services-appindexing:8.1.0'
 }

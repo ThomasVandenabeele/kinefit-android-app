@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- Generated with http://android-holo-colors.com -->
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+
+  <style name="KineFit" parent="@style/_KineFit"/>
+
+  <style name="_KineFit" parent="android:Theme.Holo.Light.DarkActionBar">
+
+    <item name="android:editTextBackground">@drawable/kinefit_edit_text_holo_light</item>
+
+    <item name="android:textColorHighlight">#99f16836</item>
+    <item name="android:textSelectHandleLeft">@drawable/kinefit_text_select_handle_left</item>
+    <item name="android:textSelectHandleRight">@drawable/kinefit_text_select_handle_right</item>
+    <item name="android:textSelectHandle">@drawable/kinefit_text_select_handle_middle</item>
+
+    <item name="android:autoCompleteTextViewStyle">@style/AutoCompleteTextViewKineFit</item>
+
+    <item name="android:listChoiceIndicatorMultiple">@drawable/kinefit_btn_check_holo_light</item>
+
+    <item name="android:listChoiceIndicatorSingle">@drawable/kinefit_btn_radio_holo_light</item>
+
+    <item name="android:buttonStyle">@style/ButtonKineFit</item>
+
+    <item name="android:imageButtonStyle">@style/ImageButtonKineFit</item>
+
+    <item name="android:dropDownSpinnerStyle">@style/SpinnerKineFit</item>
+
+    <item name="android:progressBarStyleHorizontal">@style/ProgressBarKineFit</item>
+
+    <item name="android:seekBarStyle">@style/SeekBarKineFit</item>
+
+    <item name="android:ratingBarStyle">@style/RatingBarKineFit</item>
+
+    <item name="android:ratingBarStyleIndicator">@style/RatingBarBigKineFit</item>
+
+    <item name="android:ratingBarStyleSmall">@style/RatingBarSmallKineFit</item>
+
+    <item name="android:buttonStyleToggle">@style/ToggleKineFit</item>
+
+    <item name="android:listChoiceBackgroundIndicator">@drawable/kinefit_list_selector_holo_light</item>
+
+    <item name="android:activatedBackgroundIndicator">@drawable/kinefit_activated_background_holo_light</item>
+
+    <item name="android:fastScrollThumbDrawable">@drawable/kinefit_fastscroll_thumb_holo</item>
+
+  </style>
+
+</resources>
