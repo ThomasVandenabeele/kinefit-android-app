@@ -26,3 +26,6 @@ Reeds functionerende features:
 * Login scherm + methode
 * Sensor_Step_Counter API
 * StepActivity
+* Database in orde voor applicatie
+* REST API volledig
+* Documentatie API: http://www.thomasvandenabeele.be/KineFit/doc/
