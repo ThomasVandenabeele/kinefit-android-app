@@ -14,12 +14,29 @@
         </activity>
 
         <activity
+            android:name=".DashboardActivity"
+            android:label="Start Menu" >
+        </activity>
+
+        <activity
             android:name="StepActivity"
             android:label="Count steps" >
         </activity>
+
+        <receiver android:name="com.example.myfirstapp.BootBroadcastReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+
+        <service
+            android:name=".RegisterStepsService"
+            android:exported="false"/>
     </application>
     <!--  Internet Permissions -->
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-feature android:name="@string/step_detector" android:required="false"/>
     <uses-feature android:name="@string/step_counter" android:required="false"/>
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
 </manifest>

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:background="@android:color/holo_green_light">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Dashboard"
+        android:id="@+id/Dashboard"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="50dip"
+        android:textStyle="bold" />
+
+    <Button android:id="@+id/btnSteps"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Steps"
+        android:layout_marginTop="0dip"
+        android:enabled="true" />
+
+    <Button android:id="@+id/btnTasks"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Tasks"
+        android:layout_marginTop="10dip"
+        android:enabled="true" />
+
+    <Button android:id="@+id/btnLoggings"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Loggings"
+        android:layout_marginTop="10dip"
+        android:enabled="true" />
+
+</LinearLayout>

@@ -34,7 +34,7 @@ public class LoginActivity extends Activity {
     JSONParser jsonParser = new JSONParser();
 
     // single login url
-    private static final String url_login = "http://thomasvandenabeele.no-ip.org/android_connect/login.php";
+    private static final String url_login = "http://thomasvandenabeele.no-ip.org/KineFit/login.php";
 
     // JSON Node names
     private static final String TAG_SUCCESS = "success";
@@ -128,7 +128,7 @@ public class LoginActivity extends Activity {
                                 Intent i = getIntent();
                                 // send result code 100 to notify about product update
                                 setResult(100, i);
-                                i = new Intent(getApplicationContext(), StepActivity.class);
+                                i = new Intent(getApplicationContext(), DashboardActivity.class);
                                 startActivity(i);
                                 message = "";
                                 finish();
