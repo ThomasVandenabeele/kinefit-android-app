@@ -23,6 +23,11 @@
             android:label="Count steps" >
         </activity>
 
+        <activity android:name=".DiaryActivity"
+            android:label="Diary">
+
+        </activity>
+
         <receiver android:name="com.example.myfirstapp.BootBroadcastReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
