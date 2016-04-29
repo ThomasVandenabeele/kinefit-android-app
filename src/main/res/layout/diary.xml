@@ -42,7 +42,8 @@
 
     <LinearLayout android:layout_width="fill_parent"
         android:layout_height="0dp"
-        android:layout_weight="0.8">
+        android:layout_weight="0.8"
+        android:background="@drawable/border_set">
 
         <CalendarView
             android:id="@+id/calendar"
@@ -56,7 +57,26 @@
 
     <LinearLayout android:layout_width="fill_parent"
         android:layout_height="0dp"
-        android:layout_weight="1">
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <ListView
+            android:id="@+id/listLogs"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:visibility="visible"/>
+
+        <TextView
+            android:id="@+id/noLogTV"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="No loggings found..."
+            android:gravity="center"
+            android:textSize="20dp"
+            android:textStyle="bold"
+            android:textColor="#f16836"
+            android:visibility="gone"/>
+
 
     </LinearLayout>
 

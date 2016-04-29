@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@drawable/border_set_list"
+    android:layout_marginBottom="10dp"
+    android:paddingBottom="15dp"
+    android:paddingTop="10dp">
+
+    <!-- Product id (pid) - will be HIDDEN - used to pass to other activity -->
+    <TextView
+        android:id="@+id/pid"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone" />
+
+    <!-- Name Label -->
+    <GridLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerHorizontal="true"
+        android:columnCount="5"
+        android:rowCount="2">
+
+        <TextView
+            android:id="@+id/time"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:paddingTop="6dip"
+            android:paddingLeft="6dip"
+            android:textSize="20dip"
+            android:textStyle="bold"
+            android:text="19:45"
+            android:layout_column="0"
+            android:layout_row="0"
+            android:layout_rowSpan="2"
+            android:layout_gravity="fill_vertical"
+            android:gravity="center"/>
+
+        <TextView
+            android:layout_height="wrap_content"
+            android:paddingTop="6dip"
+            android:paddingLeft="6dip"
+            android:textSize="17dip"
+            android:textStyle="bold"
+            android:text="S"
+            android:layout_column="1"
+            android:layout_row="0"
+            android:layout_rowSpan="1"/>
+        <TextView
+            android:layout_height="wrap_content"
+            android:paddingTop="6dip"
+            android:paddingLeft="6dip"
+            android:textSize="17dip"
+            android:textStyle="bold"
+            android:text="P"
+            android:layout_column="1"
+            android:layout_row="1"
+            android:layout_rowSpan="1"/>
+
+        <TextView
+            android:id="@+id/sScore"
+            android:layout_height="wrap_content"
+            android:paddingTop="6dip"
+            android:paddingLeft="6dip"
+            android:textSize="17dip"
+            android:textStyle="bold"
+            android:text="8"
+            android:layout_column="2"
+            android:layout_row="0"
+            android:layout_rowSpan="1"/>
+
+        <TextView
+            android:id="@+id/pScore"
+            android:layout_height="wrap_content"
+            android:paddingTop="6dip"
+            android:paddingLeft="6dip"
+            android:layout_marginRight="30dp"
+            android:textSize="17dip"
+            android:textStyle="bold"
+            android:text="3"
+            android:layout_column="2"
+            android:layout_row="1"
+            android:layout_rowSpan="1"/>
+
+        <TextView
+            android:id="@+id/description"
+            android:layout_width="230dp"
+            android:layout_height="wrap_content"
+            android:paddingTop="6dip"
+            android:paddingLeft="6dip"
+            android:textSize="23dip"
+            android:textStyle="bold"
+            android:text="Lopen"
+            android:layout_column="3"
+            android:layout_columnSpan="2"
+            android:layout_row="0"
+            android:layout_rowSpan="1"/>
+
+        <TextView
+            android:id="@+id/amount"
+            android:layout_height="wrap_content"
+            android:paddingTop="6dip"
+            android:paddingLeft="6dip"
+            android:textSize="17dip"
+            android:textStyle="normal"
+            android:text="10"
+            android:layout_column="3"
+            android:layout_row="1"
+            android:layout_rowSpan="1"/>
+
+        <TextView
+            android:id="@+id/unit"
+            android:layout_height="wrap_content"
+            android:paddingTop="6dip"
+            android:paddingLeft="5dp"
+            android:textSize="17dip"
+            android:textStyle="normal"
+            android:text="km"
+            android:layout_column="4"
+            android:layout_row="1"
+            android:layout_rowSpan="1"/>
+
+        <TextView
+            android:id="@+id/date"
+            android:layout_height="wrap_content"
+            android:paddingTop="6dip"
+            android:textSize="17dip"
+            android:textStyle="bold"
+            android:text="km"
+            android:layout_column="2"
+            android:layout_row="1"
+            android:layout_rowSpan="1"
+            android:visibility="gone"/>
+
+
+    </GridLayout>
+
+
+</LinearLayout>
