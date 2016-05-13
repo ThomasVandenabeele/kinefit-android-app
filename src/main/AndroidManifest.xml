@@ -34,6 +34,11 @@
 
         </activity>
 
+        <activity android:name=".TaskActivity"
+            android:label="Tasks">
+
+        </activity>
+
         <receiver android:name="com.example.myfirstapp.BootBroadcastReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />

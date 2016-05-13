@@ -91,11 +91,13 @@ public class DiaryActivity extends Activity {
         newLogBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(getApplicationContext(),
-                        NewLogging.class);
-                // Closing all previous activities
-                i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
+                Intent i = getIntent();
+                // send result code 100 to notify about product update
+                setResult(100, i);
+                i = new Intent(getApplicationContext(), NewLogging.class);
                 startActivity(i);
+
             }
         });
 
@@ -113,7 +115,10 @@ public class DiaryActivity extends Activity {
 
         });
 
-        //new LoadLoggings().execute();
+
+        currentDateSel = sdf_sql.format(new Date());
+        currentDate.setText(sdf.format(new Date()));
+        new LoadLoggings().execute();
     }
 
 
