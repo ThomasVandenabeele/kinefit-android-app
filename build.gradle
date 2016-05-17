@@ -14,7 +14,7 @@ android {
     buildToolsVersion '23.0.2'
 
     defaultConfig {
-        applicationId "be.fiiw.appi.oefening1"
+        applicationId "com.KineFit.app"
         minSdkVersion 19
         targetSdkVersion 22
         versionCode 1
@@ -34,4 +34,5 @@ repositories {
 dependencies {
     compile 'joda-time:joda-time:2.9.2'
     compile 'com.google.android.gms:play-services-appindexing:8.1.0'
+    compile 'com.jjoe64:graphview:4.0.1'
 }

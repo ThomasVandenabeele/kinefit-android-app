@@ -14,16 +14,69 @@
         <GridLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:columnCount="2"
+            android:columnCount="3"
             android:rowCount="1">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:text="Task lijst"
+                android:text="Klik op een open taak om deze te voltooien."
+                android:textStyle="italic"
                 android:gravity="center"
                 android:layout_gravity="left"
                 android:layout_marginLeft="20dp" />
+
+            <ToggleButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textOff="Filter"
+                android:textOn="Verbergen"
+                android:id="@+id/toggleButtonFilter"
+                android:layout_row="0"
+                android:layout_column="2" />
+
+        </GridLayout>
+
+
+    </LinearLayout>
+
+    <LinearLayout android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="#f59470"
+        android:id="@+id/filterMenuTasks"
+        android:visibility="gone">
+
+        <GridLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:columnCount="1"
+            android:rowCount="2"
+            android:layout_gravity="right"
+            android:paddingRight="20dp">
+
+
+            <Switch
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Toon gefaalde taken"
+                android:id="@+id/switchFailedTasks"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="10dp"
+                android:layout_row="0"
+                android:checked="true"
+                android:layout_gravity="right"/>
+            <Switch
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Toon gesloten taken"
+                android:id="@+id/switchClosedTasks"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:layout_row="1"
+                android:layout_gravity="right"/>
+
+
 
         </GridLayout>
 
@@ -31,8 +84,20 @@
     </LinearLayout>
 
     <ListView
-        android:id="@android:id/list"
+        android:id="@+id/listTasks"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:visibility="gone"/>
+
+    <TextView
+        android:id="@+id/noTasksTV"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="Geen taken gevonden die\nvoldoen aan de filtercriteria..."
+        android:gravity="center"
+        android:textSize="20dp"
+        android:textStyle="bold"
+        android:textColor="#f16836"
+        android:visibility="visible"/>
 
 </LinearLayout>

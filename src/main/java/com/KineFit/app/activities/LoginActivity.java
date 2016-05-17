@@ -1,7 +1,6 @@
-package com.example.myfirstapp;
+package com.KineFit.app.activities;
 
 import android.app.Activity;
-import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.ContentValues;
 import android.content.Intent;
@@ -13,7 +12,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import org.json.JSONArray;
+import com.KineFit.app.R;
+import com.KineFit.app.services.JSONParser;
+import com.KineFit.app.services.SessionManager;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -26,6 +28,9 @@ public class LoginActivity extends Activity {
     Button btnDoLogin;
     TextView loginMessage;
 
+    // Session Manager Class
+    private SessionManager session;
+
     public String message = "";
     // Progress Dialog
     private ProgressDialog pDialog;
@@ -34,7 +39,7 @@ public class LoginActivity extends Activity {
     JSONParser jsonParser = new JSONParser();
 
     // single login url
-    private static final String url_login = "http://thomasvandenabeele.no-ip.org/KineFit/login.php";
+    private static final String url_login = "http://thomasvandenabeele.no-ip.org/KineFit/login.php"; //"http://michielarits.ddns.net/login.php"; //"http://thomasvandenabeele.no-ip.org/KineFit/login.php";
 
     // JSON Node names
     private static final String TAG_SUCCESS = "success";
@@ -51,19 +56,13 @@ public class LoginActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login);
 
+        // Session Manager
+        session = new SessionManager(getApplicationContext());
+
         btnDoLogin = (Button) findViewById(R.id.btnDoLogin);
         txtPassword = (EditText) findViewById(R.id.inputPassword);
         txtUsername = (EditText) findViewById(R.id.inputUsername);
         loginMessage = (TextView) findViewById(R.id.loginMessage);
-
-        // getting product details from intent
-        //Intent i = getIntent();
-
-        // getting product id (pid) from intent
-        //pid = i.getStringExtra(TAG_PID);
-
-        // Getting complete product details in background thread
-        //new GetProductDetails().execute();
 
         // save button click event
         btnDoLogin.setOnClickListener(new View.OnClickListener() {
@@ -73,9 +72,16 @@ public class LoginActivity extends Activity {
                 // starting background task to update product
                 username = txtUsername.getText().toString();
                 password = txtPassword.getText().toString();
-                new DoLogin().execute();
-
+                // Check if username, password is filled
+                if(username.trim().length() > 0 && password.trim().length() > 0){
+                    loginMessage.setText("");
+                    new DoLogin().execute();
+                }else{
+                    if(username.trim().length()==0) txtUsername.setError("Please insert an username.");
+                    if(password.trim().length()==0) txtPassword.setError("Please insert a password.");
+                }
             }
+
         });
 
     }
@@ -102,56 +108,41 @@ public class LoginActivity extends Activity {
          * Checking login in background thread
          * */
         protected String doInBackground(String... params) {
+            ContentValues parameters = new ContentValues();
+            parameters.put("username", username);
+            parameters.put("password", password);
 
-            // updating UI from Background Thread
-            //runOnUiThread(new Runnable() {
-                    // Check for success tag
-                    int success;
-                        // Building Parameters
-                        ContentValues parameters = new ContentValues();
-                        parameters.put("username", username);
-                        parameters.put("password", password);
+            JSONObject json = jsonParser.makeHttpRequest(url_login, "POST", parameters);
+            Log.d("Login", json.toString());
 
-                        // getting product details by making HTTP request
-                        // Note that product details url will use GET request
-                        JSONObject json = jsonParser.makeHttpRequest(
-                                url_login, "POST", parameters);
+            try {
+                if (json.getInt(TAG_SUCCESS) == 1) {
 
-                        // check your log for json response
-                        Log.d("Login", json.toString());
+                    session.createLoginSession(username);
 
-                        try {
-                            int successt = json.getInt(TAG_SUCCESS);
+                    // Door naar dashboard.
+                    Intent i = new Intent(getApplicationContext(), DashboardActivity.class);
+                    startActivity(i);
+                    message = "";
+                    finish();
 
-                            if (successt == 1) {
-                                // successfully updated
-                                Intent i = getIntent();
-                                // send result code 100 to notify about product update
-                                setResult(100, i);
-                                i = new Intent(getApplicationContext(), DashboardActivity.class);
-                                startActivity(i);
-                                message = "";
-                                finish();
-                            } else {
-                                // failed to update product
-                                message = "Login Failed";
-                            }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
+                } else {
+                    // Login failed
+                    message = "Login Failed. Try again.";
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
 
-                        return null;
-                    }
+            return null;
+        }
 
         /**
          * After completing background task Dismiss the progress dialog
          * **/
         protected void onPostExecute(String file_url) {
-            // dismiss the dialog once got all details
             pDialog.dismiss();
             loginMessage.setText(message);
-            //Intent i = new Intent(getApplicationContext(), MainActivity.class);
-            //startActivity(i);
         }
     }
 

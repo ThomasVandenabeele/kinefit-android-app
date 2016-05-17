@@ -1,7 +1,6 @@
-package com.example.myfirstapp;
+package com.KineFit.app.activities;
 
 import android.app.Activity;
-import android.app.ListActivity;
 import android.app.ProgressDialog;
 import android.content.ContentValues;
 import android.content.Intent;
@@ -9,14 +8,16 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.CalendarView;
-import android.widget.ListAdapter;
 import android.widget.ListView;
-import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
-import org.apache.http.NameValuePair;
+import com.KineFit.app.R;
+import com.KineFit.app.adapters.LoggingsAdapter;
+import com.KineFit.app.model.Logging;
+import com.KineFit.app.services.JSONParser;
+import com.KineFit.app.services.SessionManager;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -29,7 +30,7 @@ import java.util.Locale;
 /**
  * Created by Thomas on 28/04/16.
  */
-public class DiaryActivity extends Activity {
+public class DiaryActivity extends BaseActivity {
 
     // Progress Dialog
     private ProgressDialog pDialog;
@@ -58,7 +59,6 @@ public class DiaryActivity extends Activity {
     // products JSONArray
     JSONArray loggings = null;
 
-
     SimpleDateFormat sdf = new SimpleDateFormat("EEEE d MMMM yyyy", new Locale("nl_NL"));
     SimpleDateFormat sdf_sql = new SimpleDateFormat("yyyy-MM-dd");
 
@@ -66,6 +66,7 @@ public class DiaryActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.diary);
+
         currentDate = (TextView) findViewById(R.id.currentDate);
         newLogBtn = (TextView) findViewById(R.id.newLogBtn);
         noLogTV = (TextView) findViewById(R.id.noLogTV);
@@ -95,7 +96,7 @@ public class DiaryActivity extends Activity {
                 Intent i = getIntent();
                 // send result code 100 to notify about product update
                 setResult(100, i);
-                i = new Intent(getApplicationContext(), NewLogging.class);
+                i = new Intent(getApplicationContext(), NewLoggingActivity.class);
                 startActivity(i);
 
             }
@@ -146,7 +147,7 @@ public class DiaryActivity extends Activity {
         protected String doInBackground(String... args) {
             // Building Parameters
             ContentValues parameters = new ContentValues();
-            parameters.put("username", "TVDA");
+            parameters.put("username", session.getUsername());
             parameters.put("date", currentDateSel);
             // getting JSON string from URL
             JSONObject json = jParser.makeHttpRequest(url_get_logs_on_date, "GET", parameters);

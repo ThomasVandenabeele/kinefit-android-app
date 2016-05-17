@@ -1,7 +1,8 @@
-package com.example.myfirstapp;
+package com.KineFit.app.model;
+
+import com.KineFit.app.model.enums.TaskStatus;
 
 import java.sql.Date;
-import java.sql.Time;
 
 /**
  * Created by Thomas on 28/04/16.

@@ -1,16 +1,177 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:weightSum="1">
 
-    <TextView android:layout_width="fill_parent"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/textview"
-        android:text=""
-        android:paddingLeft="10dip"
-        android:paddingRight="10dip"
-        android:paddingTop="10dip"
-        android:textSize="25dip"
-        android:gravity="center"/>
+        android:layout_weight="0.3"
+        android:background="#f16836"
+        android:orientation="vertical"
+        android:weightSum="1">
+
+        <LinearLayout android:layout_width="fill_parent"
+            android:layout_height="50dp"
+            android:background="#f16836"
+            android:layout_weight="0.2">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="Stappen-statistieken:"
+                android:textStyle="bold"
+                android:gravity="center"
+                android:textAlignment="center"
+                android:textSize="20dp"/>
+
+
+        </LinearLayout>
+
+        <LinearLayout android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:background="#f59470"
+            android:layout_weight="0.8">
+
+            <GridLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:columnCount="2"
+                android:rowCount="4"
+                android:layout_gravity="center_vertical">
+
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Totaal aantal stappen:"
+                    android:textStyle="bold"
+                    android:gravity="center"
+                    android:layout_marginLeft="20dp"
+                    android:layout_row="0"
+                    android:layout_column="0"/>
+
+                <TextView android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/textview"
+                    android:text="-"
+                    android:paddingLeft="10dip"
+                    android:paddingRight="10dip"
+                    android:paddingTop="10dip"
+                    android:gravity="left"
+                    android:layout_row="0"
+                    android:layout_column="1"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Aantal stappen deze week:"
+                    android:textStyle="bold"
+                    android:gravity="center"
+                    android:layout_marginLeft="20dp"
+                    android:layout_row="1"
+                    android:layout_column="0"/>
+
+                <TextView android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/stepWeekCount"
+                    android:text="-"
+                    android:paddingLeft="10dip"
+                    android:paddingRight="10dip"
+                    android:paddingTop="10dip"
+                    android:gravity="left"
+                    android:layout_row="1"
+                    android:layout_column="1"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Aantal stappen vandaag:"
+                    android:textStyle="bold"
+                    android:gravity="center"
+                    android:layout_marginLeft="20dp"
+                    android:layout_row="2"
+                    android:layout_column="0"/>
+
+                <TextView android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/stepDayCount"
+                    android:text="-"
+                    android:paddingLeft="10dip"
+                    android:paddingRight="10dip"
+                    android:paddingTop="10dip"
+                    android:gravity="left"
+                    android:layout_row="2"
+                    android:layout_column="1"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Geselecteerde week:"
+                    android:textStyle="bold"
+                    android:gravity="center"
+                    android:layout_marginLeft="20dp"
+                    android:layout_row="3"
+                    android:layout_column="0"/>
+
+                <TextView android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/selectedWeekSteps"
+                    android:text="-"
+                    android:paddingLeft="10dip"
+                    android:paddingRight="10dip"
+                    android:paddingTop="10dip"
+                    android:gravity="left"
+                    android:layout_row="3"
+                    android:layout_column="1"/>
+
+
+
+            </GridLayout>
+
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+
+    <com.jjoe64.graphview.GraphView
+        android:layout_width="match_parent"
+        android:layout_height="200dip"
+        android:id="@+id/graphSteps"
+        android:layout_weight="0.6"
+        android:paddingTop="30dp"
+        />
+
+
+    <RelativeLayout
+        android:id="@+id/relativeLayout1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:layout_weight="0.1">
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:text="« Week terug"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="20dp"/>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:text="Week verder »"
+            android:enabled="false"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="20dp"/>
+
+    </RelativeLayout>
+
+
 
 </LinearLayout>

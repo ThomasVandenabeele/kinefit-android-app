@@ -1,4 +1,4 @@
-package com.example.myfirstapp;
+package com.KineFit.app.model;
 
 import java.sql.Date;
 import java.sql.Time;

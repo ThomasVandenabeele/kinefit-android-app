@@ -28,7 +28,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:text="+ New"
+                android:text="+ Nieuw"
                 android:textStyle="bold"
                 android:id="@+id/newLogBtn"
                 android:gravity="right"
@@ -70,7 +70,7 @@
             android:id="@+id/noLogTV"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:text="No loggings found..."
+            android:text="Geen logs gevonden op\nde geselecteerde datum..."
             android:gravity="center"
             android:textSize="20dp"
             android:textStyle="bold"

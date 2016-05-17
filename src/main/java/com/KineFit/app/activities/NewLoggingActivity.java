@@ -1,8 +1,7 @@
-package com.example.myfirstapp;
+package com.KineFit.app.activities;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.ContentValues;
 import android.content.Intent;
@@ -23,12 +22,14 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
+import com.KineFit.app.R;
+import com.KineFit.app.model.Logs_Type;
+import com.KineFit.app.services.JSONParser;
+import com.KineFit.app.services.SessionManager;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.w3c.dom.Text;
 
-import java.sql.Date;
-import java.sql.Time;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -37,7 +38,9 @@ import java.util.GregorianCalendar;
 /**
  * Created by Thomas on 28/04/16.
  */
-public class NewLogging extends Activity {
+public class NewLoggingActivity extends BaseActivity {
+
+    private SessionManager session;
 
     private Spinner type;
     private TextView val_unit;
@@ -74,6 +77,9 @@ public class NewLogging extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.new_logging);
 
+        session = new SessionManager(getApplicationContext());
+        session.checkLogin();
+
         selectedDate = (TextView) findViewById(R.id.selectedDate);
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.DATE, 1);
@@ -86,8 +92,8 @@ public class NewLogging extends Activity {
         newLogTypeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final View dialogView = View.inflate(NewLogging.this, R.layout.new_logs_type, null);
-                final AlertDialog alertDialog = new AlertDialog.Builder(NewLogging.this).create();
+                final View dialogView = View.inflate(NewLoggingActivity.this, R.layout.new_logs_type, null);
+                final AlertDialog alertDialog = new AlertDialog.Builder(NewLoggingActivity.this).create();
                 dialogView.findViewById(R.id.createLogsType).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -114,8 +120,8 @@ public class NewLogging extends Activity {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if(isChecked){
-                    final View dialogView = View.inflate(NewLogging.this, R.layout.date_time_picker, null);
-                    final AlertDialog alertDialog = new AlertDialog.Builder(NewLogging.this).create();
+                    final View dialogView = View.inflate(NewLoggingActivity.this, R.layout.date_time_picker, null);
+                    final AlertDialog alertDialog = new AlertDialog.Builder(NewLoggingActivity.this).create();
                     dialogView.findViewById(R.id.date_time_set).setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
@@ -231,7 +237,7 @@ public class NewLogging extends Activity {
             public void onClick(View v) {
                 SimpleDateFormat srcDf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 parameters.clear();
-                parameters.put("username", "TVDA");
+                parameters.put("username", session.getUsername());
                 parameters.put("type_id", sel_lt.getId());
                 parameters.put("amount", Integer.valueOf(et_amount.getText().toString()));
                 parameters.put("sScore", Integer.valueOf(sScore.getText().toString()));
@@ -301,7 +307,7 @@ public class NewLogging extends Activity {
                 //runOnUiThread(new Runnable() {
                   //  public void run() {
 
-                        ArrayAdapter<Logs_Type> spinnerAdapter = new ArrayAdapter<Logs_Type>(NewLogging.this, android.R.layout.simple_spinner_item, logtypList);
+                        ArrayAdapter<Logs_Type> spinnerAdapter = new ArrayAdapter<Logs_Type>(NewLoggingActivity.this, android.R.layout.simple_spinner_item, logtypList);
                         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                         type.setAdapter(spinnerAdapter);
 
@@ -327,7 +333,7 @@ public class NewLogging extends Activity {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            pDialog = new ProgressDialog(NewLogging.this);
+            pDialog = new ProgressDialog(NewLoggingActivity.this);
             pDialog.setMessage("Creating Log..");
             pDialog.setIndeterminate(false);
             pDialog.setCancelable(true);
@@ -387,7 +393,7 @@ public class NewLogging extends Activity {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            pDialog = new ProgressDialog(NewLogging.this);
+            pDialog = new ProgressDialog(NewLoggingActivity.this);
             pDialog.setMessage("Creating Logs Type..");
             pDialog.setIndeterminate(false);
             pDialog.setCancelable(true);

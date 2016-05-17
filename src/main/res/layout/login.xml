@@ -11,7 +11,7 @@
         android:id="@+id/test_image"
         android:src="@drawable/logo_kinefit"
         android:layout_width="wrap_content"
-        android:layout_height="800px"
+        android:layout_height="500px"
         android:paddingBottom="20dip"
         />
 
@@ -62,11 +62,10 @@
     <TextView android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:id="@+id/loginMessage"
-        android:text=""
         android:paddingLeft="10dip"
         android:paddingRight="10dip"
         android:paddingTop="10dip"
-        android:textSize="25dip"
+        android:textSize="20dip"
         android:textColor="#FF0000"
         android:gravity="center"/>
 

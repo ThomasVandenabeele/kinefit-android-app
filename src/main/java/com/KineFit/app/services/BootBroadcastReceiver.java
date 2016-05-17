@@ -1,4 +1,4 @@
-package com.example.myfirstapp;
+package com.KineFit.app.services;
 
 import android.content.Context;
 import android.content.Intent;

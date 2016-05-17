@@ -1,4 +1,4 @@
-package com.example.myfirstapp;
+package com.KineFit.app.model;
 
 /**
  * Created by Thomas on 29/04/16.

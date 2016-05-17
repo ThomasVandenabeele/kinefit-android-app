@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+    <!-- Search / will display always -->
+    <item android:id="@+id/action_logout"
+        android:title="Uitloggen"
+        android:icon="@drawable/ic_exit_icon"
+        android:showAsAction="ifRoom|withText"/>
+
+</menu>

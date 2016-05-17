@@ -13,28 +13,47 @@
         android:text="Dashboard"
         android:id="@+id/Dashboard"
         android:layout_gravity="center_horizontal"
-        android:layout_marginBottom="50dip"
+        android:layout_marginBottom="10dip"
         android:textStyle="bold" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:id="@+id/Welcome"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="50dip"/>
 
     <Button android:id="@+id/btnSteps"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="Steps"
+        android:text="Stappen"
+        android:layout_marginLeft="50dp"
+        android:layout_marginRight="50dp"
         android:layout_marginTop="0dip"
-        android:enabled="true" />
+        android:enabled="true"
+        android:paddingTop="30dp"
+        android:paddingBottom="30dp"/>
 
     <Button android:id="@+id/btnTasks"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="Tasks"
+        android:text="Taken"
         android:layout_marginTop="10dip"
-        android:enabled="true" />
+        android:enabled="true"
+        android:layout_marginLeft="50dp"
+        android:layout_marginRight="50dp"
+        android:paddingTop="30dp"
+        android:paddingBottom="30dp"/>
 
     <Button android:id="@+id/btnLoggings"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="Loggings"
+        android:text="Logboek"
         android:layout_marginTop="10dip"
-        android:enabled="true" />
+        android:enabled="true"
+        android:layout_marginLeft="50dp"
+        android:layout_marginRight="50dp"
+        android:paddingTop="30dp"
+        android:paddingBottom="30dp"/>
 
 </LinearLayout>
