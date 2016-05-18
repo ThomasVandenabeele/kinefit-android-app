@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout android:layout_width="fill_parent"
+        android:layout_height="50dp"
+        android:background="#f16836">
+
+        <GridLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="Registreer een nieuw account..."
+                android:textStyle="italic"
+                android:gravity="center"
+                android:layout_gravity="left"
+                android:layout_marginLeft="20dp" />
+
+        </GridLayout>
+
+
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="20dp"
+        android:gravity="center_vertical"
+        android:orientation="vertical">
+
+        <TextView android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/registerMessage"
+            android:paddingLeft="10dip"
+            android:paddingRight="10dip"
+            android:paddingTop="10dip"
+            android:textSize="20dip"
+            android:textColor="#FF0000"
+            android:gravity="center"/>
+
+        <TextView android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:textColor="#372c24"
+            android:text="Voornaam"/>
+        <EditText android:id="@+id/reg_voornaam"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dip"
+            android:singleLine="true"
+            android:layout_marginBottom="20dip"/>
+
+        <TextView android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:textColor="#372c24"
+            android:text="Naam"/>
+        <EditText android:id="@+id/reg_naam"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dip"
+            android:singleLine="true"
+            android:layout_marginBottom="20dip"/>
+
+
+        <!--  Email Label -->
+        <TextView android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:textColor="#372c24"
+            android:text="Email"/>
+        <EditText android:id="@+id/reg_email"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dip"
+            android:singleLine="true"
+            android:inputType="textEmailAddress"
+            android:layout_marginBottom="50dip"/>
+
+
+        <TextView android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:textColor="#372c24"
+            android:text="Gebruikersnaam"/>
+        <EditText android:id="@+id/reg_gebruikersnaam"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:singleLine="true"
+            android:layout_marginTop="5dip"
+            android:layout_marginBottom="20dp"/>
+
+        <!-- Password Label -->
+        <TextView android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:textColor="#372c24"
+            android:text="Wachtwoord"/>
+        <EditText android:id="@+id/reg_wachtwoord"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textPassword"
+            android:singleLine="true"
+            android:layout_marginTop="5dip"
+            android:layout_marginBottom="20dp"/>
+
+        <TextView android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:textColor="#372c24"
+            android:text="Bevestig wachtwoord"/>
+        <EditText android:id="@+id/reg_bev_wachtwoord"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textPassword"
+            android:singleLine="true"
+            android:layout_marginTop="5dip"
+            android:layout_marginBottom="20dp"/>
+
+
+        <!-- Register Button -->
+        <Button android:id="@+id/btnRegister"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dip"
+            android:text="Registreer"/>
+
+    </LinearLayout>
+
+</LinearLayout>

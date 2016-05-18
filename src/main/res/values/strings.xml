@@ -10,5 +10,7 @@
              android.hardware.sensor.stepdetector
        </string>
 
+    <string name="registreer"><u>Registreer</u></string>
+
 </resources>
 

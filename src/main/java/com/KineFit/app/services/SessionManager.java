@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.Intent;
+import android.hardware.camera2.params.StreamConfigurationMap;
 
 import com.KineFit.app.activities.LoginActivity;
 
@@ -23,14 +24,14 @@ public class SessionManager {
     // Shared pref mode
     int PRIVATE_MODE = 0;
 
-    // Sharedpref bestandsnaam
+    // tags
     private static final String PREF_NAME = "KineFitPref";
-
-    // Tag voor login
     private static final String IS_LOGIN = "IsLoggedIn";
-
-    // Tag voor username
-    public static final String KEY_USERNAME = "username";
+    private static final String KEY_USERNAME = "username";
+    private static final String KEY_EMAIL = "email";
+    private static final String KEY_NAAM = "naam";
+    private static final String KEY_VOORNAAM = "voornaam";
+    private static final String KEY_REMEMBERED_USER = "remUsername";
 
     // Constructor
     public SessionManager(Context context){
@@ -41,11 +42,18 @@ public class SessionManager {
 
     /**
      * Maak login sessie
-     * @param name username
+     * @param naam gebruikersnaam
      * */
-    public void createLoginSession(String name){
+    public void createLoginSession(String gebruikersnaam, String naam, String voornaam, String email, Boolean remembered){
         editor.putBoolean(IS_LOGIN, true);
-        editor.putString(KEY_USERNAME, name);
+        editor.putString(KEY_USERNAME, gebruikersnaam);
+        editor.putString(KEY_NAAM, naam);
+        editor.putString(KEY_VOORNAAM, voornaam);
+        editor.putString(KEY_EMAIL, email);
+
+        if(remembered) editor.putString(KEY_REMEMBERED_USER, gebruikersnaam);
+        else editor.remove(KEY_REMEMBERED_USER);
+
         editor.commit();
 
         launchStepsService();
@@ -76,8 +84,9 @@ public class SessionManager {
      * Loguit
      * */
     public void logoutUser(){
-
+        String rem = pref.getString(KEY_REMEMBERED_USER, null);
         editor.clear();
+        if(rem != null) editor.putString(KEY_REMEMBERED_USER, rem);
         editor.commit();
 
         // Bij loguit, terug naar loginactivity!
@@ -89,6 +98,19 @@ public class SessionManager {
      * **/
     public boolean isLoggedIn(){
         return pref.getBoolean(IS_LOGIN, false);
+    }
+
+
+    public String getVoornaam(){
+        return pref.getString(KEY_VOORNAAM, null);
+    }
+
+    public String getVolledigeNaam(){
+        return pref.getString(KEY_NAAM, null) + " " + pref.getString(KEY_VOORNAAM, null);
+    }
+
+    public String getRememberedUser(){
+        return pref.getString(KEY_REMEMBERED_USER, null);
     }
 
     /**

@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -27,6 +28,8 @@ public class LoginActivity extends Activity {
     EditText txtPassword;
     Button btnDoLogin;
     TextView loginMessage;
+    TextView registreer;
+    CheckBox herinner;
 
     // Session Manager Class
     private SessionManager session;
@@ -43,6 +46,9 @@ public class LoginActivity extends Activity {
 
     // JSON Node names
     private static final String TAG_SUCCESS = "success";
+    private static final String TAG_EMAIL = "email";
+    private static final String TAG_VOORNAAM = "firstname";
+    private static final String TAG_NAAM = "name";
     private static final String TAG_PRODUCT = "products";
     private static final String TAG_PID = "pid";
     private static final String TAG_NAME = "name";
@@ -63,6 +69,17 @@ public class LoginActivity extends Activity {
         txtPassword = (EditText) findViewById(R.id.inputPassword);
         txtUsername = (EditText) findViewById(R.id.inputUsername);
         loginMessage = (TextView) findViewById(R.id.loginMessage);
+        herinner = (CheckBox) findViewById(R.id.herinnerCB);
+        registreer = (TextView) findViewById(R.id.registreerBtn);
+
+        registreer.setOnClickListener(new View.OnClickListener() {
+
+            public void onClick(View v) {
+                // Switching to Register screen
+                Intent i = new Intent(getApplicationContext(), RegisterActivity.class);
+                startActivity(i);
+            }
+        });
 
         // save button click event
         btnDoLogin.setOnClickListener(new View.OnClickListener() {
@@ -75,7 +92,7 @@ public class LoginActivity extends Activity {
                 // Check if username, password is filled
                 if(username.trim().length() > 0 && password.trim().length() > 0){
                     loginMessage.setText("");
-                    new DoLogin().execute();
+                    new DoLogin(herinner.isChecked()).execute();
                 }else{
                     if(username.trim().length()==0) txtUsername.setError("Please insert an username.");
                     if(password.trim().length()==0) txtPassword.setError("Please insert a password.");
@@ -84,12 +101,26 @@ public class LoginActivity extends Activity {
 
         });
 
+        if(session.getRememberedUser() != null){
+            herinner.setChecked(true);
+            txtUsername.setText(session.getRememberedUser());
+        }
+        else{
+            herinner.setChecked(false);
+        }
+
     }
 
     /**
      * Background Async Task to check login
      * */
     class DoLogin extends AsyncTask<String, String, String> {
+
+        private boolean herinner;
+
+        public DoLogin (boolean herinner){
+            this.herinner = herinner;
+        }
 
         /**
          * Before starting background thread Show Progress Dialog
@@ -118,7 +149,11 @@ public class LoginActivity extends Activity {
             try {
                 if (json.getInt(TAG_SUCCESS) == 1) {
 
-                    session.createLoginSession(username);
+                    session.createLoginSession( username,
+                                                json.getString(TAG_NAAM),
+                                                json.getString(TAG_VOORNAAM),
+                                                json.getString(TAG_EMAIL),
+                                                herinner);
 
                     // Door naar dashboard.
                     Intent i = new Intent(getApplicationContext(), DashboardActivity.class);

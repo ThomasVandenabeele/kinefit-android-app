@@ -12,6 +12,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.view.Menu;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.KineFit.app.R;
@@ -48,7 +49,7 @@ public class DashboardActivity extends BaseActivity {
         setContentView(R.layout.dashboard);
 
         welcome = (TextView) findViewById(R.id.Welcome);
-        welcome.setText("Welkom, " + session.getUsername() +"!");
+        welcome.setText("Welkom, " + session.getVoornaam() +"!");
         btnSteps = (Button) findViewById(R.id.btnSteps);
         btnTasks = (Button) findViewById(R.id.btnTasks);
         btnLoggings = (Button) findViewById(R.id.btnLoggings);

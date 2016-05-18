@@ -18,38 +18,44 @@
     <!-- Name Label -->
     <TextView android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="Username"
+        android:text="Gebruikersnaam"
         android:paddingLeft="10dip"
         android:paddingRight="10dip"
         android:paddingTop="10dip"
-        android:textSize="17dip"/>
+        android:textSize="17dip"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"/>
 
     <!-- Input Name -->
     <EditText android:id="@+id/inputUsername"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="5dip"
         android:layout_marginBottom="15dip"
         android:singleLine="true"
-        android:text="TVDA"/>
+        android:text=""
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"/>
 
     <!-- Price Label -->
     <TextView android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="Password"
+        android:text="Wachtwoord"
         android:paddingLeft="10dip"
         android:paddingRight="10dip"
         android:paddingTop="10dip"
-        android:textSize="17dip"/>
+        android:textSize="17dip"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"/>
 
     <!-- Input Price -->
     <EditText android:id="@+id/inputPassword"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="5dip"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
         android:layout_marginBottom="15dip"
         android:singleLine="true"
-        android:text="fiiw"
+        android:text=""
         android:inputType="textPassword"/>
 
 
@@ -57,7 +63,42 @@
     <Button android:id="@+id/btnDoLogin"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="Login"/>
+        android:text="Login"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"/>
+
+    <GridLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:columnCount="2"
+        android:rowCount="1"
+        android:layout_marginTop="10dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/registreer"
+            android:layout_gravity="left"
+            android:layout_marginLeft="20dp"
+            android:layout_column="0"
+            android:layout_row="0"
+            android:textSize="20dp"
+            android:id="@+id/registreerBtn"/>
+
+        <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Herinner mij?"
+            android:id="@+id/herinnerCB"
+            android:layout_gravity="right"
+            android:layout_marginRight="20dp"
+            android:layout_column="1"
+            android:layout_row="0"
+            android:textSize="20dp"/>
+
+
+    </GridLayout>
+
 
     <TextView android:layout_width="fill_parent"
         android:layout_height="wrap_content"
