@@ -10,43 +10,52 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import com.KineFit.app.R;
-import com.KineFit.app.model.Task;
+import com.KineFit.app.model.Taak;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 /**
+ * ArrayAdapter voor de ListView voor Taken.
+ *
  * Created by Thomas on 28/04/16.
+ * @author Thomas Vandenabeele
  */
-public class TasksAdapter extends ArrayAdapter<Task> {
+public class TakenAdapter extends ArrayAdapter<Taak> {
 
-    // declaring our ArrayList of items
-    private ArrayList<Task> tasks;
+    /** Lijst van taken */
+    private ArrayList<Taak> taken;
 
-    /* here we must override the constructor for ArrayAdapter
-    * the only variable we care about now is ArrayList<Item> objects,
-    * because it is the list of objects we want to display.
-    */
-    public TasksAdapter(Context context, int textViewResourceId, ArrayList<Task> objects) {
+    /**
+     * Constructor voor de TakenAdapter
+     * @param context context
+     * @param textViewResourceId id van textViewResource
+     * @param objects Arraylist<Logging>
+     */
+    public TakenAdapter(Context context, int textViewResourceId, ArrayList<Taak> objects) {
         super(context, textViewResourceId, objects);
-        this.tasks = objects;
+        this.taken = objects;
     }
 
-    /*
-     * we are overriding the getView method here - this is what defines how each
-     * list item will look.
+    /**
+     * In deze methode leggen we vast hoe ieder item er moet uitzien.
+     * @param position positie
+     * @param convertView view
+     * @param parent viewGroup
+     * @return View
      */
+    @Override
     public View getView(int position, View convertView, ViewGroup parent){
 
-        // assign the view we are converting to a local variable
         View v = convertView;
 
-        // first check to see if the view is null. if so, we have to inflate it.
-        // to inflate it basically means to render, or show, the view.
         if (v == null) {
+            // Definieer layout
             LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             v = inflater.inflate(R.layout.task_list_item, null);
+
+            // Alternerende kleuren voor achtergrond
             if (position % 2 == 1) {
                 v.setBackgroundColor(Color.rgb(202, 225, 143));//Color.rgb(246, 164, 134));
             } else {
@@ -54,38 +63,29 @@ public class TasksAdapter extends ArrayAdapter<Task> {
             }
         }
 
-		/*
-		 * Recall that the variable position is sent in as an argument to this method.
-		 * The variable simply refers to the position of the current object in the list. (The ArrayAdapter
-		 * iterates through the list we sent it)
-		 *
-		 * Therefore, i refers to the current Item object.
-		 */
-        Task l = tasks.get(position);
+        Taak l = taken.get(position);
 
         if (l != null) {
 
-            // This is how you obtain a reference to the TextViews.
-            // These TextViews are created in the XML files we defined.
-
+            //region UI componenten toekennen
             TextView id = (TextView) v.findViewById(R.id.task_pid);
             TextView task_name = (TextView) v.findViewById(R.id.task_name);
             TextView task_date = (TextView) v.findViewById(R.id.task_date);
             TextView task_item_status = (TextView) v.findViewById(R.id.task_item_status);
+            //endregion
 
             DateFormat df = new SimpleDateFormat("H:mm");
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-            //String t = String.valueOf(l.getId());
-            // check to see if each individual textview is null.
-            // if not, assign some text!
+
+            // Waarden toekennen aan de textViews.
             if (id != null){
                 id.setText(String.valueOf(l.getId()));
             }
             if (task_name != null){
-                task_name.setText(l.getMessage());
+                task_name.setText(l.getBericht());
             }
             if (task_date != null){
-                task_date.setText(sdf.format(l.getCreate_date()));
+                task_date.setText(sdf.format(l.getAanmaakDatum()));
             }
             if (task_item_status != null){
                 task_name.setTypeface(Typeface.DEFAULT);
@@ -111,7 +111,7 @@ public class TasksAdapter extends ArrayAdapter<Task> {
 
         }
 
-        // the view must be returned to our activity
+        // de view teruggeven
         return v;
 
     }

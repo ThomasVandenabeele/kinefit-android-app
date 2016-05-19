@@ -1,144 +1,159 @@
 package com.KineFit.app.activities;
 
-import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.view.Menu;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.KineFit.app.R;
 import com.KineFit.app.services.JSONParser;
-import com.KineFit.app.services.SessionManager;
 
 import org.json.JSONObject;
 
 /**
+ * Activity voor het Dashboard.
+ * Op deze activity kunnen de gebruikers navigeren naar de verschillende andere activities.
+ *
  * Created by Thomas on 22/04/16.
+ * @author Thomas Vandenabeele
  */
-public class DashboardActivity extends BaseActivity {
+public class DashboardActivity extends BasisActivity {
 
-    Button btnSteps;
-    Button btnTasks;
-    Button btnLoggings;
-    TextView welcome;
+    //region DATAMEMBERS
 
-    // Progress Dialog
-    private ProgressDialog pDialog;
+    /** Button voor StapActivity */
+    private Button btnStappen;
 
-    // Creating JSON Parser object
+    /** Button voor TakenActivity */
+    private Button btnTaken;
+
+    /** Button voor LogboekActivity */
+    private Button btnLogboek;
+
+    /** Textview voor het welkom-bericht */
+    private TextView txtWelkom;
+
+    //endregion
+
+    //region REST: TAGS & URL
+
+    /** JSONParser voor de REST client aan te spreken */
     JSONParser jParser = new JSONParser();
 
-    // url to get all products list
-    private static String url_count_new_tasks = "http://thomasvandenabeele.no-ip.org/KineFit/get_count_new_tasks.php";
-    private static final String TAG_SUCCESS = "success";
-    private static final String TAG_TASKSCOUNT = "tasksCount";
+    /** URL om het aantal nieuwe taken op te vragen */
+    private static String url_get_nieuwe_taken = "http://thomasvandenabeele.no-ip.org/KineFit/get_count_new_tasks.php";
 
+    /** Tag voor succes-waarde */
+    private static final String TAG_SUCCES = "success";
 
+    /** Tag voor aantal onbekeken taken */
+    private static final String TAG_AANTALTAKEN = "tasksCount";
+
+    //endregion
+
+    /**
+     * Methode die opgeroepen wordt bij aanmaak activity.
+     * @param savedInstanceState
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.dashboard);
 
-        welcome = (TextView) findViewById(R.id.Welcome);
-        welcome.setText("Welkom, " + session.getVoornaam() +"!");
-        btnSteps = (Button) findViewById(R.id.btnSteps);
-        btnTasks = (Button) findViewById(R.id.btnTasks);
-        btnLoggings = (Button) findViewById(R.id.btnLoggings);
+        //region UI componenten toekennen
+        txtWelkom = (TextView) findViewById(R.id.Welcome);
+        btnStappen = (Button) findViewById(R.id.btnSteps);
+        btnTaken = (Button) findViewById(R.id.btnTasks);
+        btnLogboek = (Button) findViewById(R.id.btnLoggings);
+        //endregion
 
-        btnSteps.setOnClickListener(new View.OnClickListener() {
+        // Welkoms-bericht plaatsen
+        txtWelkom.setText("Welkom, " + sessie.getVoornaam() +"!");
 
-            @Override
-            public void onClick(View view) {
-
-                Intent i = new Intent(getApplicationContext(), StepActivity.class);
-                i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                startActivity(i);
-
-            }
-        });
-
-        btnTasks.setOnClickListener(new View.OnClickListener() {
+        // ClickListener voor btnStappen
+        btnStappen.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View view) {
-
-                Intent i = new Intent(getApplicationContext(), TaskActivity.class);
+                // Start StapActivity
+                Intent i = new Intent(getApplicationContext(), StapActivity.class);
                 i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 startActivity(i);
+            }
+        });
 
+        // ClickListener voor btnTaken
+        btnTaken.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // Start TakenActivity
+                Intent i = new Intent(getApplicationContext(), TakenActivity.class);
+                i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                startActivity(i);
             }
 
         });
 
-        btnLoggings.setOnClickListener(new View.OnClickListener() {
+        // ClickListener voor btnLogboek
+        btnLogboek.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View view) {
-
-                Intent i = new Intent(getApplicationContext(), DiaryActivity.class);
+                // Start LogboekActivity
+                Intent i = new Intent(getApplicationContext(), LogboekActivity.class);
                 i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 startActivity(i);
-
             }
 
         });
-        if(session.isLoggedIn()) new CountNewTasks().execute();
+
+        // Als er ingelogde gebruiker is: tel ongelezen taken (async taak).
+        if(sessie.isLoggedIn()) {
+            ContentValues params = new ContentValues();
+            params.put("username", sessie.getUsername());
+            new CountNewTasks().execute(params);
+        }
 
     }
 
-
-
     /**
-     * Background Async Task to Load all product by making HTTP Request
+     * Async Taak op achtergrond om het aantal ongelezen taken op te halen en weer te geven.
+     * Via HTTP Request naar REST client.
      * */
-    class CountNewTasks extends AsyncTask<String, String, String> {
+    class CountNewTasks extends AsyncTask<ContentValues, String, Integer> {
 
-        private int aantal;
+        /**
+         * Deze methode wordt in de achtergrond uitgevoerd.
+         * @param params ContentValues voor de REST client.
+         * @return aantal nieuwe taken
+         */
+        protected Integer doInBackground(ContentValues... params) {
 
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-        }
+            // Maakt de request en geeft het resultaat
+            JSONObject json = jParser.makeHttpRequest(url_get_nieuwe_taken, "GET", params[0]);
+            Log.d("Aantal nieuwe taken: ", json.toString());
 
-        protected String doInBackground(String... args) {
-
-            ContentValues params = new ContentValues();
-            params.put("username", session.getUsername());
-
-            JSONObject json = jParser.makeHttpRequest(url_count_new_tasks, "GET", params);
-            Log.d("New tasks: ", json.toString());
-
-            try {
-                if (json.getInt(TAG_SUCCESS) == 1) {
-                    aantal = json.getInt(TAG_TASKSCOUNT);
+            try{
+                if (json.getInt(TAG_SUCCES) == 1) {
+                    return json.getInt(TAG_AANTALTAKEN);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
             }
 
-            return null;
+            return 0;
         }
 
         /**
-         * After completing background task Dismiss the progress dialog
+         * Methode voor na uitvoering taak.
+         * Update de UI door het aantal nieuwe taken weer te geven als deze verschillend is van 0.
          * **/
-        protected void onPostExecute(String file_url) {
-            // updating UI from Background Thread
-            runOnUiThread(new Runnable() {
-                public void run() {
-                    if(aantal != 0) btnTasks.setText(btnTasks.getText() + " (" + aantal + ")");
-                }
-            });
-
+        protected void onPostExecute(int aantal) {
+            if(aantal != 0) btnTaken.setText(btnTaken.getText() + " (" + aantal + ")");
         }
 
     }

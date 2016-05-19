@@ -3,7 +3,6 @@ package com.KineFit.app.activities;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.ContentValues;
-import android.content.Intent;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -11,7 +10,6 @@ import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -25,57 +23,97 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
+ * Activity voor het Registratie scherm.
+ * Op deze activity kan er een nieuwe gebruiker aangemaakt worden.
+ *
  * Created by Thomas on 18/05/16.
+ * @author Thomas Vandenabeele
  */
 public class RegisterActivity extends Activity {
 
-    private EditText voornaam;
-    private EditText naam;
-    private EditText email;
-    private EditText gebruikersnaam;
-    private EditText wachtwoord;
-    private EditText bevWachtwoord;
-    private Button registreer;
-    private TextView registerMessage;
+    //region DATAMEMBERS
 
-    // Progress Dialog
+    /** EditText voor voornaam */
+    private EditText voornaam;
+
+    /** EditText voor naam */
+    private EditText naam;
+
+    /** EditText voor email */
+    private EditText email;
+
+    /** EditText voor gebruikersnaam */
+    private EditText gebruikersnaam;
+
+    /** EditText voor wachtwoord */
+    private EditText wachtwoord;
+
+    /** EditText voor bevesting wachtwoord */
+    private EditText bevWachtwoord;
+
+    /** Button voor registratie */
+    private Button registreer;
+
+    /** TextView voor registratie bericht */
+    private TextView registreerBericht;
+
+    /** ProgressDialog voor UI */
     private ProgressDialog pDialog;
 
-    // JSON parser class
+    //endregion
+
+    //region REST: TAGS & URL
+
+    /** JSONParser voor de REST client aan te spreken */
     JSONParser jsonParser = new JSONParser();
 
-    // single login url
-    private static final String url_register = "http://thomasvandenabeele.no-ip.org/KineFit/register_user.php";
+    /** URL voor registratie gebruiker */
+    private static final String url_registreer = "http://thomasvandenabeele.no-ip.org/KineFit/register_user.php";
 
-    // JSON Node names
+    /** Tag voor succes-waarde */
     private static final String TAG_SUCCESS = "success";
+
+    /** Tag voor email */
     private static final String TAG_EMAIL = "email";
+
+    /** Tag voor voornaam */
     private static final String TAG_VOORNAAM = "firstname";
+
+    /** Tag voor naam */
     private static final String TAG_NAAM = "name";
+
+    /** Tag voor wachtwoord */
     private static final String TAG_WACHTWOORD = "password";
+
+    /** Tag voor gebruikersnaam */
     private static final String TAG_GEBRUIKERSNAAM = "username";
 
+    //endregion
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // Set View to register.xml
         setContentView(R.layout.registreer);
 
-        registerMessage = (TextView) findViewById(R.id.registerMessage);
+        //region UI componenten toekennen
+        registreerBericht = (TextView) findViewById(R.id.registerMessage);
         voornaam = (EditText) findViewById(R.id.reg_voornaam);
         naam = (EditText) findViewById(R.id.reg_naam);
         email = (EditText) findViewById(R.id.reg_email);
         gebruikersnaam = (EditText) findViewById(R.id.reg_gebruikersnaam);
         wachtwoord = (EditText) findViewById(R.id.reg_wachtwoord);
         bevWachtwoord = (EditText) findViewById(R.id.reg_bev_wachtwoord);
+        registreer = (Button) findViewById(R.id.btnRegister);
+        //endregion
 
+        // TextChangedListener voor email TextView
         email.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
+                // Validatie aan de hand van kleurweergave
                 if (TextUtils.isEmpty(s)) {
                     email.setBackgroundColor(Color.rgb(205,85,85));
                 } else {
@@ -88,12 +126,14 @@ public class RegisterActivity extends Activity {
             public void afterTextChanged(Editable s) {}
         });
 
+        // TextChangedListener voor bevestiging wachtwoord en wachtwoord TextViews
         bevWachtwoord.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
+                // Validatie aan de hand van kleurweergave
                 String t = wachtwoord.getText().toString();
                 if((s.toString()).equals(wachtwoord.getText().toString())){
                     bevWachtwoord.setBackgroundColor(Color.rgb(0, 177, 106));
@@ -109,31 +149,32 @@ public class RegisterActivity extends Activity {
             public void afterTextChanged(Editable s) { }
         });
 
-        registreer = (Button) findViewById(R.id.btnRegister);
-
+        // OnClickListener voor registratie knop
         registreer.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View arg0) {
+                // Eerst validatie, lege velden checken, ...
+
                 boolean fout = false;
-                if(isEmpty(voornaam)) {
+                if(isLeeg(voornaam)) {
                     voornaam.setError("Je voornaam is verplicht!");
                     fout = true;
                 }
-                if(isEmpty(naam)) {
+                if(isLeeg(naam)) {
                     naam.setError("Je naam is verplicht!");
                     fout = true;
                 }
-                if(isEmpty(email) | !android.util.Patterns.EMAIL_ADDRESS.matcher(email.getText()).matches()) {
+                if(isLeeg(email) | !android.util.Patterns.EMAIL_ADDRESS.matcher(email.getText()).matches()) {
                     email.setError("Geef een geldig emailadres!");
                     fout = true;
                 }
-                if(isEmpty(gebruikersnaam)){
+                if(isLeeg(gebruikersnaam)){
                     gebruikersnaam.setError("Je gebruikersnaam is verplicht!");
                     fout = true;
                 }
-                if(isEmpty(wachtwoord)){
+                if(isLeeg(wachtwoord)){
                     wachtwoord.setError("Geef een geldig wachtwoord!");
-                    if(isEmpty(bevWachtwoord)) bevWachtwoord.setError("Vul eerst een wachtwoord in!");
+                    if(isLeeg(bevWachtwoord)) bevWachtwoord.setError("Vul eerst een wachtwoord in!");
                     fout = true;
                 }
                 if(!bevWachtwoord.getText().toString().equals(wachtwoord.getText().toString())){
@@ -143,6 +184,8 @@ public class RegisterActivity extends Activity {
                 }
 
                 if(!fout){
+
+                    // Gebruiker registreren
                     ContentValues parameters = new ContentValues();
                     parameters.put(TAG_NAAM, naam.getText().toString());
                     parameters.put(TAG_VOORNAAM, voornaam.getText().toString());
@@ -150,22 +193,30 @@ public class RegisterActivity extends Activity {
                     parameters.put(TAG_GEBRUIKERSNAAM, gebruikersnaam.getText().toString());
                     parameters.put(TAG_WACHTWOORD, bevWachtwoord.getText().toString());
 
-                    new RegisterUser().execute(parameters);
+                    new RegistreerGebruiker().execute(parameters);
 
                 }
             }
         });
     }
 
-    private boolean isEmpty(EditText etText) {
-        return etText.getText().toString().trim().length() == 0;
+    /**
+     * Methode om te kijken of een EditText leeg is.
+     * @param editText EditText voor check
+     * @return true bij leeg, anders false
+     */
+    private boolean isLeeg(EditText editText) {
+        return editText.getText().toString().trim().length() == 0;
     }
 
-
-    class RegisterUser extends AsyncTask<ContentValues, String, String> {
+    /**
+     * Async Taak op achtergrond om gebruiker te registreren
+     * Via HTTP Request naar REST client.
+     * */
+    class RegistreerGebruiker extends AsyncTask<ContentValues, String, String> {
 
         /**
-         * Before starting background thread Show Progress Dialog
+         * Methode die opgeroepen wordt voor uitvoeren van taak.
          * */
         @Override
         protected void onPreExecute() {
@@ -178,10 +229,14 @@ public class RegisterActivity extends Activity {
         }
 
         /**
-         * Checking login in background thread
-         * */
+         * Deze methode wordt in de achtergrond uitgevoerd.
+         * @param params ContentValues voor de REST client.
+         * @return bericht voor registratie
+         */
         protected String doInBackground(ContentValues... params) {
-            JSONObject json = jsonParser.makeHttpRequest(url_register, "POST", params[0]);
+
+            // Maakt de request en geeft het resultaat
+            JSONObject json = jsonParser.makeHttpRequest(url_registreer, "POST", params[0]);
             Log.d("Register: ", json.toString());
 
             try {
@@ -195,17 +250,19 @@ public class RegisterActivity extends Activity {
                 e.printStackTrace();
             }
 
+            // Geen fout, dan leeg bericht teruggeven
             return "";
         }
 
         /**
-         * After completing background task Dismiss the progress dialog
+         * Methode voor na uitvoering taak. Update de UI.
          * **/
         protected void onPostExecute(String message) {
             pDialog.dismiss();
-            Toast.makeText(getApplicationContext(), "Registratie gelukt! U kan nu inloggen.", Toast.LENGTH_LONG).show();
-            registerMessage.setText(message);
+            registreerBericht.setText(message);
+            if(message.equals("")) Toast.makeText(getApplicationContext(), "Registratie gelukt! U kan nu inloggen.", Toast.LENGTH_LONG).show();
         }
+
     }
 
 }

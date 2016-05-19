@@ -41,7 +41,7 @@
         android:singleLine="true"/>
 
     <Button
-        android:id="@+id/createLogsType"
+        android:id="@+id/maakLogsType"
         android:layout_width="match_parent"
         android:text="Aanmaken"
         android:layout_height="wrap_content" />

@@ -11,7 +11,7 @@ import com.KineFit.app.activities.LoginActivity;
 /**
  * Created by Thomas on 17/05/16.
  */
-public class SessionManager {
+public class SessieManager {
     // Shared Preferences
     SharedPreferences pref;
 
@@ -34,7 +34,7 @@ public class SessionManager {
     private static final String KEY_REMEMBERED_USER = "remUsername";
 
     // Constructor
-    public SessionManager(Context context){
+    public SessieManager(Context context){
         this._context = context;
         pref = _context.getSharedPreferences(PREF_NAME, PRIVATE_MODE);
         editor = pref.edit();
@@ -109,7 +109,7 @@ public class SessionManager {
         return pref.getString(KEY_NAAM, null) + " " + pref.getString(KEY_VOORNAAM, null);
     }
 
-    public String getRememberedUser(){
+    public String getHerinnerdeGebruiker(){
         return pref.getString(KEY_REMEMBERED_USER, null);
     }
 

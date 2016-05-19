@@ -30,12 +30,13 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:padding="20dp">
 
         <SeekBar
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/sb_pScore"
+            android:id="@+id/sbTScore"
             android:layout_gravity="center_horizontal"
             android:indeterminate="false"
             android:max="10"
@@ -44,7 +45,7 @@
             android:layout_alignParentStart="true"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
-            android:layout_toStartOf="@+id/val_pScore" />
+            android:layout_toStartOf="@+id/txtPScore" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -55,7 +56,7 @@
             android:layout_marginTop="50dp"
             android:layout_marginLeft="10dp"
             android:textStyle="bold"
-            android:layout_below="@+id/val_unit" />
+            android:layout_below="@+id/txtEenheid" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -71,25 +72,25 @@
         <Spinner
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/sel_type"
+            android:id="@+id/spType"
             android:layout_below="@+id/textView2"
             android:layout_alignStart="@+id/textView2"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
-            android:layout_toLeftOf="@+id/newLogTypeBtn"/>
+            android:layout_toLeftOf="@+id/nieuwLogType"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="+ Nieuw\ntype"
             android:gravity="center"
-            android:id="@+id/newLogTypeBtn"
+            android:id="@+id/nieuwLogType"
             android:layout_marginLeft="20dp"
             android:textStyle="normal"
             android:textColor="#f16836"
             android:textSize="15dp"
-            android:layout_alignBaseline="@+id/sel_type"
-            android:layout_alignBottom="@+id/sel_type"
+            android:layout_alignBaseline="@+id/spType"
+            android:layout_alignBottom="@+id/spType"
             android:layout_alignParentEnd="true"
             android:layout_marginRight="20dp" />
 
@@ -98,7 +99,7 @@
             android:layout_height="wrap_content"
             android:text="Hoeveelheid"
             android:id="@+id/textView3"
-            android:layout_below="@+id/sel_type"
+            android:layout_below="@+id/spType"
             android:layout_alignParentStart="true"
             android:layout_marginTop="20dp"
             android:layout_marginLeft="10dp"
@@ -107,25 +108,25 @@
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/et_amount"
+            android:id="@+id/etHoeveelheid"
             android:layout_below="@+id/textView3"
             android:layout_alignParentStart="true"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
             android:inputType="number"
-            android:layout_toLeftOf="@+id/val_unit"
+            android:layout_toLeftOf="@+id/txtEenheid"
             android:singleLine="true"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="km"
-            android:id="@+id/val_unit"
+            android:id="@+id/txtEenheid"
             android:layout_marginLeft="20dp"
             android:textStyle="bold"
             android:textSize="20dp"
-            android:layout_alignBaseline="@+id/et_amount"
-            android:layout_alignBottom="@+id/et_amount"
+            android:layout_alignBaseline="@+id/etHoeveelheid"
+            android:layout_alignBottom="@+id/etHoeveelheid"
             android:layout_alignParentEnd="true"
             android:layout_marginRight="20dp" />
 
@@ -133,8 +134,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="0"
-            android:id="@+id/val_pScore"
-            android:layout_alignTop="@+id/sb_pScore"
+            android:id="@+id/txtPScore"
+            android:layout_alignTop="@+id/sbTScore"
             android:layout_alignParentEnd="true"
             android:layout_marginTop="7dp"
             android:layout_marginRight="20dp"
@@ -148,7 +149,7 @@
             android:text="Score of Satisfaction"
             android:id="@+id/textView6"
             android:layout_marginLeft="10dp"
-            android:layout_below="@+id/sb_pScore"
+            android:layout_below="@+id/sbTScore"
             android:textStyle="bold"
             android:layout_alignParentStart="true"
             android:layout_marginTop="20dp" />
@@ -156,7 +157,7 @@
         <SeekBar
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/sb_sScore"
+            android:id="@+id/sbSScore"
             android:layout_gravity="center_horizontal"
             android:indeterminate="false"
             android:max="10"
@@ -166,7 +167,7 @@
             android:layout_alignParentLeft="true"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
-            android:layout_toStartOf="@+id/val_sScore" />
+            android:layout_toStartOf="@+id/txtTScore" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -174,8 +175,8 @@
             android:text="0"
             android:textSize="20dp"
             android:textStyle="bold"
-            android:id="@+id/val_sScore"
-            android:layout_alignTop="@+id/sb_sScore"
+            android:id="@+id/txtTScore"
+            android:layout_alignTop="@+id/sbSScore"
             android:layout_alignParentEnd="true"
             android:layout_marginTop="7dp"
             android:layout_marginRight="20dp"
@@ -185,24 +186,24 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Aanmaken"
-            android:id="@+id/btnCreateLog"
+            android:id="@+id/btnMaakLogging"
             android:layout_alignParentBottom="true"
-            android:layout_alignEnd="@+id/val_sScore" />
+            android:layout_alignEnd="@+id/txtTScore" />
 
         <CheckBox
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Verschillend tijdstip"
-            android:id="@+id/cb_difdatetime"
+            android:id="@+id/cbVerschillendTijdstip"
             android:layout_marginLeft="10dp"
             android:checked="false"
-            android:layout_below="@+id/selectedDate" />
+            android:layout_below="@+id/geselecteerdeDatum" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text=""
-            android:id="@+id/selectedDate"
+            android:id="@+id/geselecteerdeDatum"
             android:layout_marginLeft="10dp"
             android:layout_below="@+id/textView5"
             android:layout_alignParentStart="true" />
@@ -214,7 +215,7 @@
             android:id="@+id/textView5"
             android:layout_marginLeft="10dp"
             android:textStyle="bold"
-            android:layout_below="@+id/sb_sScore"
+            android:layout_below="@+id/sbSScore"
             android:layout_marginTop="50dp" />
 
 

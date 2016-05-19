@@ -15,169 +15,242 @@ import android.widget.TextView;
 
 import com.KineFit.app.R;
 import com.KineFit.app.services.JSONParser;
-import com.KineFit.app.services.SessionManager;
+import com.KineFit.app.services.SessieManager;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
+ * Activity voor de Login pagina.
+ * Op deze activity kan de gebruiker inloggen in de app.
+ *
  * Created by Thomas on 16/04/16.
+ * @author Thomas Vandenabeele
  */
 public class LoginActivity extends Activity {
-    EditText txtUsername;
-    EditText txtPassword;
-    Button btnDoLogin;
-    TextView loginMessage;
-    TextView registreer;
-    CheckBox herinner;
 
-    // Session Manager Class
-    private SessionManager session;
+    //region DATAMEMBERS
 
-    public String message = "";
-    // Progress Dialog
+    /** EditText voor gebruikersnaam */
+    private EditText txtGebruikersnaam;
+
+    /** EditText voor wachtwoord */
+    private EditText txtWachtwoord;
+
+    /** Button voor login */
+    private Button btnDoeLogin;
+
+    /** TextView voor login bericht */
+    private TextView tvLoginBericht;
+
+    /** TextView voor registreer (knop) */
+    private TextView tvRegistreer;
+
+    /** CheckBox voor herinnerMij gebruiker */
+    private CheckBox herinnerMij;
+
+    /** ProgressDialog voor informatie op UI */
     private ProgressDialog pDialog;
 
-    // JSON parser class
+    /** SessieManager voor gebruikerinfo */
+    private SessieManager sessie;
+
+    //endregion
+
+    //region REST: TAGS & URL
+
+    /** JSONParser voor de REST client aan te spreken */
     JSONParser jsonParser = new JSONParser();
 
-    // single login url
-    private static final String url_login = "http://thomasvandenabeele.no-ip.org/KineFit/login.php"; //"http://michielarits.ddns.net/login.php"; //"http://thomasvandenabeele.no-ip.org/KineFit/login.php";
+    /** URL voor login te checken */
+    private static final String url_login = "http://thomasvandenabeele.no-ip.org/KineFit/login.php";
 
-    // JSON Node names
+    /** Tag voor succes-waarde */
     private static final String TAG_SUCCESS = "success";
+
+    /** Tag voor post gebruikersnaam */
+    private static final String TAG_GEBRUIKERSNAAM = "username";
+
+    /** Tag voor post wachtwoord */
+    private static final String TAG_WACHTWOORD= "password";
+
+    /** Tag voor return email */
     private static final String TAG_EMAIL = "email";
+
+    /** Tag voor return voornaam */
     private static final String TAG_VOORNAAM = "firstname";
+
+    /** Tag voor return naam */
     private static final String TAG_NAAM = "name";
-    private static final String TAG_PRODUCT = "products";
-    private static final String TAG_PID = "pid";
-    private static final String TAG_NAME = "name";
-    private static final String TAG_PRICE = "price";
-    private static final String TAG_DESCRIPTION = "description";
 
-    public String username, password;
+    //endregion
 
+    /**
+     * Methode die opgeroepen wordt bij aanmaak activity.
+     * @param savedInstanceState
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login);
 
-        // Session Manager
-        session = new SessionManager(getApplicationContext());
+        // SessieManager instantiëren
+        sessie = new SessieManager(getApplicationContext());
 
-        btnDoLogin = (Button) findViewById(R.id.btnDoLogin);
-        txtPassword = (EditText) findViewById(R.id.inputPassword);
-        txtUsername = (EditText) findViewById(R.id.inputUsername);
-        loginMessage = (TextView) findViewById(R.id.loginMessage);
-        herinner = (CheckBox) findViewById(R.id.herinnerCB);
-        registreer = (TextView) findViewById(R.id.registreerBtn);
+        //region UI componenten toekennen
+        btnDoeLogin = (Button) findViewById(R.id.btnDoeLogin);
+        txtWachtwoord = (EditText) findViewById(R.id.txtWachtwoord);
+        txtGebruikersnaam = (EditText) findViewById(R.id.txtGebruikersnaam);
+        tvLoginBericht = (TextView) findViewById(R.id.loginBericht);
+        herinnerMij = (CheckBox) findViewById(R.id.herinnerMijCB);
+        tvRegistreer = (TextView) findViewById(R.id.registreerBtn);
+        //endregion
 
-        registreer.setOnClickListener(new View.OnClickListener() {
+        // OnClickListener voor registreer knop
+        tvRegistreer.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View v) {
-                // Switching to Register screen
+                // Start registratie scherm
                 Intent i = new Intent(getApplicationContext(), RegisterActivity.class);
                 startActivity(i);
             }
+
         });
 
-        // save button click event
-        btnDoLogin.setOnClickListener(new View.OnClickListener() {
+        // OnClickListener voor login knop
+        btnDoeLogin.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View arg0) {
-                // starting background task to update product
-                username = txtUsername.getText().toString();
-                password = txtPassword.getText().toString();
-                // Check if username, password is filled
-                if(username.trim().length() > 0 && password.trim().length() > 0){
-                    loginMessage.setText("");
-                    new DoLogin(herinner.isChecked()).execute();
-                }else{
-                    if(username.trim().length()==0) txtUsername.setError("Please insert an username.");
-                    if(password.trim().length()==0) txtPassword.setError("Please insert a password.");
+
+                boolean fout = false;
+
+                // Kijk of velden ingevuld zijn
+                if(isLeeg(txtGebruikersnaam)){
+                    fout = true;
+                    txtGebruikersnaam.setError("Geef een gebruikersnaarm.");
                 }
+                if(isLeeg(txtWachtwoord)){
+                    fout = true;
+                    txtWachtwoord.setError("Geef een wachtwoord.");
+                }
+
+                // Inloggen wanneer er geen fout optrad
+                if(!fout){
+                    tvLoginBericht.setText("");
+
+                    // Doe login async taak
+                    ContentValues parameters = new ContentValues();
+                    parameters.put(TAG_GEBRUIKERSNAAM, txtGebruikersnaam.getText().toString());
+                    parameters.put(TAG_WACHTWOORD, txtWachtwoord.getText().toString());
+
+                    new DoeLogin(herinnerMij.isChecked()).execute(parameters);
+                }
+
             }
 
         });
 
-        if(session.getRememberedUser() != null){
-            herinner.setChecked(true);
-            txtUsername.setText(session.getRememberedUser());
+        // Kijk of er een gebruiker opgeslagen is
+        if(sessie.getHerinnerdeGebruiker() != null){
+            herinnerMij.setChecked(true);
+
+            // Plaats opgeslagen gebruikersnaam in txtGebruikersnaam
+            txtGebruikersnaam.setText(sessie.getHerinnerdeGebruiker());
         }
         else{
-            herinner.setChecked(false);
+            herinnerMij.setChecked(false);
         }
 
     }
 
     /**
-     * Background Async Task to check login
+     * Methode om te kijken of een EditText leeg is.
+     * @param editText EditText voor check
+     * @return true bij leeg, anders false
+     */
+    private boolean isLeeg(EditText editText) {
+        return editText.getText().toString().trim().length() == 0;
+    }
+
+    /**
+     * Async Taak op achtergrond om login te verifiëren.
+     * Via HTTP Request naar REST client.
      * */
-    class DoLogin extends AsyncTask<String, String, String> {
+    class DoeLogin extends AsyncTask<ContentValues, String, String> {
 
-        private boolean herinner;
+        /** Boolean voor herinnerMij */
+        private boolean herinnerMij;
 
-        public DoLogin (boolean herinner){
-            this.herinner = herinner;
+        /**
+         * Constructor voor DoeLogin
+         * @param herinnerMij boolean voor gebruiker te herinneren
+         */
+        public DoeLogin(boolean herinnerMij){
+            this.herinnerMij = herinnerMij;
         }
 
         /**
-         * Before starting background thread Show Progress Dialog
+         * Methode die opgeroepen wordt voor uitvoeren van taak.
          * */
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
             pDialog = new ProgressDialog(LoginActivity.this);
-            pDialog.setMessage("Checking login. Please wait...");
+            pDialog.setMessage("Aan het inloggen, even geduld aub...");
             pDialog.setIndeterminate(false);
             pDialog.setCancelable(true);
             pDialog.show();
         }
 
         /**
-         * Checking login in background thread
-         * */
-        protected String doInBackground(String... params) {
-            ContentValues parameters = new ContentValues();
-            parameters.put("username", username);
-            parameters.put("password", password);
+         * Deze methode wordt in de achtergrond uitgevoerd.
+         * @param params ContentValues voor de REST client.
+         * @return ArrayList<Logging> lijst van loggings
+         */
+        protected String doInBackground(ContentValues... params) {
 
-            JSONObject json = jsonParser.makeHttpRequest(url_login, "POST", parameters);
-            Log.d("Login", json.toString());
+            // Maakt de request en geeft het resultaat
+            JSONObject json = jsonParser.makeHttpRequest(url_login, "POST", params[0]);
+            Log.d("Login: ", json.toString());
 
+            String bericht = "";
             try {
                 if (json.getInt(TAG_SUCCESS) == 1) {
-
-                    session.createLoginSession( username,
+                    // Maak login sessie aan voor gebruiker
+                    sessie.createLoginSession(  params[0].getAsString(TAG_GEBRUIKERSNAAM),
                                                 json.getString(TAG_NAAM),
                                                 json.getString(TAG_VOORNAAM),
                                                 json.getString(TAG_EMAIL),
-                                                herinner);
+                                                herinnerMij);
 
-                    // Door naar dashboard.
+                    // Start het Dashboard
                     Intent i = new Intent(getApplicationContext(), DashboardActivity.class);
                     startActivity(i);
-                    message = "";
+                    bericht = "";
                     finish();
 
                 } else {
                     // Login failed
-                    message = "Login Failed. Try again.";
+                    bericht = "Login gefaald. Probeer over enkele ogenblikken opnieuw.";
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
             }
 
-            return null;
+            // Geef het bericht terug
+            return bericht;
         }
 
         /**
-         * After completing background task Dismiss the progress dialog
+         * Methode voor na uitvoering taak. Update de UI.
          * **/
-        protected void onPostExecute(String file_url) {
+        protected void onPostExecute(String bericht) {
+            // Dialoogvenster sluiten
             pDialog.dismiss();
-            loginMessage.setText(message);
+
+            // Set bericht in tvLoginBericht
+            tvLoginBericht.setText(bericht);
         }
     }
 

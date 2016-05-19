@@ -27,7 +27,7 @@
         android:layout_marginRight="20dp"/>
 
     <!-- Input Name -->
-    <EditText android:id="@+id/inputUsername"
+    <EditText android:id="@+id/txtGebruikersnaam"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="15dip"
@@ -48,7 +48,7 @@
         android:layout_marginRight="20dp"/>
 
     <!-- Input Price -->
-    <EditText android:id="@+id/inputPassword"
+    <EditText android:id="@+id/txtWachtwoord"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="20dp"
@@ -60,7 +60,7 @@
 
 
     <!-- Button Create Product -->
-    <Button android:id="@+id/btnDoLogin"
+    <Button android:id="@+id/btnDoeLogin"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:text="Login"
@@ -89,7 +89,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Herinner mij?"
-            android:id="@+id/herinnerCB"
+            android:id="@+id/herinnerMijCB"
             android:layout_gravity="right"
             android:layout_marginRight="20dp"
             android:layout_column="1"
@@ -102,7 +102,7 @@
 
     <TextView android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/loginMessage"
+        android:id="@+id/loginBericht"
         android:paddingLeft="10dip"
         android:paddingRight="10dip"
         android:paddingTop="10dip"

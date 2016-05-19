@@ -29,8 +29,6 @@ public class RegisterStepsService extends IntentService implements SensorEventLi
     private static final String url_steps = "http://thomasvandenabeele.no-ip.org/KineFit/register_steps.php";
 
     private long startTime;
-    private long endTime;
-    private final long INTERVAL = 5000;
 
     // Must create a default constructor
     public RegisterStepsService() {
@@ -125,7 +123,7 @@ public class RegisterStepsService extends IntentService implements SensorEventLi
 
 
     /**
-     * Background Async Task to register steps
+     * Background Async Taak to register steps
      * */
     class RegisterSteps extends AsyncTask<String, String, String> {
 

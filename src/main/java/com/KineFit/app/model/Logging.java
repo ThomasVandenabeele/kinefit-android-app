@@ -4,71 +4,134 @@ import java.sql.Date;
 import java.sql.Time;
 
 /**
+ * Modelklasse voor Logging
+ *
  * Created by Thomas on 28/04/16.
+ * @author Thomas Vandenabeele
  */
 public class Logging {
 
+    //region DATAMEMBERS
+
+    /** de id van de logging */
     private int id;
-    private String description;
-    private Time time;
-    private Date date;
-    private int amount;
-    private String unit;
-    private int sScore;
+
+    /** de beschrijving van de logging */
+    private String beschrijving;
+
+    /** de tijd van de logging */
+    private Time tijd;
+
+    /** de datum van de logging */
+    private Date datum;
+
+    /** de hoeveelheid van de logging */
+    private int hoeveelheid;
+
+    /** de eenheid van de logging */
+    private String eenheid;
+
+    /** de tevredenheid score van de logging */
+    private int tScore;
+
+    /** de pijn score van de logging */
     private int pScore;
 
+    //endregion
 
-    public Logging(){
-        super();
-    }
-
-    public Logging(int id, String description, Time time, Date date, int amount, String unit, int sScore, int pScore) {
+    /**
+     * Constructor voor Logging
+     * @param id de id
+     * @param beschrijving de beschrijving
+     * @param tijd de tijd
+     * @param datum de datum
+     * @param hoeveelheid de hoeveelheid
+     * @param eenheid de eenheid
+     * @param tScore de tevredenheid score
+     * @param pScore de pijn score
+     */
+    public Logging(int id, String beschrijving, Time tijd, Date datum, int hoeveelheid, String eenheid, int tScore, int pScore) {
         this.id = id;
-        this.description = description;
-        this.time = time;
-        this.date = date;
-        this.amount = amount;
-        this.unit = unit;
-        this.sScore = sScore;
+        this.beschrijving = beschrijving;
+        this.tijd = tijd;
+        this.datum = datum;
+        this.hoeveelheid = hoeveelheid;
+        this.eenheid = eenheid;
+        this.tScore = tScore;
         this.pScore = pScore;
     }
 
 
+    /**
+     * Overriding toString() methode
+     * @return de id + de beschrijving
+     */
     @Override
     public String toString() {
-        return this.id + ". " + this.description;
+        return this.id + ". " + this.beschrijving;
     }
 
-
-    public int getsScore() {
-        return sScore;
+    /**
+     * Geeft de tevredenheid score terug
+     * @return tScore
+     */
+    public int gettScore() {
+        return tScore;
     }
 
+    /**
+     * Geeft de pijn score terug
+     * @return pScore
+     */
     public int getpScore() {
         return pScore;
     }
 
+    /**
+     * Geeft de id terug
+     * @return id
+     */
     public int getId() {
         return id;
     }
 
-    public String getDescription() {
-        return description;
+    /**
+     * Geeft de beschrijving terug
+     * @return beschrijving
+     */
+    public String getBeschrijving() {
+        return beschrijving;
     }
 
-    public Time getTime() {
-        return time;
+    /**
+     * Geeft de tijd terug
+     * @return tijd
+     */
+    public Time getTijd() {
+        return tijd;
     }
 
-    public Date getDate() {
-        return date;
+    /**
+     * Geeft de datum terug
+     * @return datum
+     */
+    public Date getDatum() {
+        return datum;
     }
 
-    public int getAmount() {
-        return amount;
+    /**
+     * Geeft de hoeveelheid terug
+     * @return hoeveelheid
+     */
+    public int getHoeveelheid() {
+        return hoeveelheid;
     }
 
-    public String getUnit() {
-        return unit;
+    /**
+     * Geeft de eenheid terug
+     * @return eenheid
+     */
+    public String getEenheid() {
+        return eenheid;
     }
 }

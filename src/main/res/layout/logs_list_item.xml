@@ -10,7 +10,7 @@
 
     <!-- Product id (pid) - will be HIDDEN - used to pass to other activity -->
     <TextView
-        android:id="@+id/pid"
+        android:id="@+id/id"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:visibility="gone" />
@@ -24,7 +24,7 @@
         android:rowCount="2">
 
         <TextView
-            android:id="@+id/time"
+            android:id="@+id/tijd"
             android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:paddingTop="6dip"
@@ -60,7 +60,7 @@
             android:layout_rowSpan="1"/>
 
         <TextView
-            android:id="@+id/sScore"
+            android:id="@+id/tScore"
             android:layout_height="wrap_content"
             android:paddingTop="6dip"
             android:paddingLeft="6dip"
@@ -85,7 +85,7 @@
             android:layout_rowSpan="1"/>
 
         <TextView
-            android:id="@+id/description"
+            android:id="@+id/beschrijving"
             android:layout_width="230dp"
             android:layout_height="wrap_content"
             android:paddingTop="6dip"
@@ -99,7 +99,7 @@
             android:layout_rowSpan="1"/>
 
         <TextView
-            android:id="@+id/amount"
+            android:id="@+id/hoeveelheid"
             android:layout_height="wrap_content"
             android:paddingTop="6dip"
             android:paddingLeft="6dip"
@@ -111,7 +111,7 @@
             android:layout_rowSpan="1"/>
 
         <TextView
-            android:id="@+id/unit"
+            android:id="@+id/eenheid"
             android:layout_height="wrap_content"
             android:paddingTop="6dip"
             android:paddingLeft="5dp"
@@ -123,7 +123,7 @@
             android:layout_rowSpan="1"/>
 
         <TextView
-            android:id="@+id/date"
+            android:id="@+id/datum"
             android:layout_height="wrap_content"
             android:paddingTop="6dip"
             android:textSize="17dip"

@@ -11,7 +11,7 @@ public class BootBroadcastReceiver extends WakefulBroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        // Launch the specified service when this message is received
+        // Launch the specified service when this bericht is received
         Intent startServiceIntent = new Intent(context, RegisterStepsService.class);
         startWakefulService(context, startServiceIntent);
     }

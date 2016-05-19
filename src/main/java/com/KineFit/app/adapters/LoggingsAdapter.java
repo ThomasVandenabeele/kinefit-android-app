@@ -16,36 +16,45 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 /**
+ * ArrayAdapter voor de ListView voor Loggings.
+ *
  * Created by Thomas on 28/04/16.
+ * @author Thomas Vandenabeele
  */
 public class LoggingsAdapter extends ArrayAdapter<Logging> {
 
-    // declaring our ArrayList of items
+    /** Lijst van loggings */
     private ArrayList<Logging> logs;
 
-    /* here we must override the constructor for ArrayAdapter
-    * the only variable we care about now is ArrayList<Item> objects,
-    * because it is the list of objects we want to display.
-    */
+    /**
+     * Constructor voor de LoggingsAdapter
+     * @param context context
+     * @param textViewResourceId id van textViewResource
+     * @param objects Arraylist<Logging>
+     */
     public LoggingsAdapter(Context context, int textViewResourceId, ArrayList<Logging> objects) {
         super(context, textViewResourceId, objects);
         this.logs = objects;
     }
 
-    /*
-     * we are overriding the getView method here - this is what defines how each
-     * list item will look.
+    /**
+     * In deze methode leggen we vast hoe ieder item er moet uitzien.
+     * @param position positie
+     * @param convertView view
+     * @param parent viewGroup
+     * @return View
      */
+    @Override
     public View getView(int position, View convertView, ViewGroup parent){
 
-        // assign the view we are converting to a local variable
         View v = convertView;
 
-        // first check to see if the view is null. if so, we have to inflate it.
-        // to inflate it basically means to render, or show, the view.
         if (v == null) {
+            // Definieer layout
             LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             v = inflater.inflate(R.layout.logs_list_item, null);
+
+            // Alternerende kleuren voor achtergrond
             if (position % 2 == 1) {
                 v.setBackgroundColor(Color.rgb(202, 225, 143));//Color.rgb(246, 164, 134));
             } else {
@@ -53,56 +62,48 @@ public class LoggingsAdapter extends ArrayAdapter<Logging> {
             }
         }
 
-		/*
-		 * Recall that the variable position is sent in as an argument to this method.
-		 * The variable simply refers to the position of the current object in the list. (The ArrayAdapter
-		 * iterates through the list we sent it)
-		 *
-		 * Therefore, i refers to the current Item object.
-		 */
         Logging l = logs.get(position);
 
         if (l != null) {
 
-            // This is how you obtain a reference to the TextViews.
-            // These TextViews are created in the XML files we defined.
-
-            TextView id = (TextView) v.findViewById(R.id.pid);
-            TextView description = (TextView) v.findViewById(R.id.description);
-            TextView time = (TextView) v.findViewById(R.id.time);
-            TextView date = (TextView) v.findViewById(R.id.date);
-            TextView amount = (TextView) v.findViewById(R.id.amount);
-            TextView unit = (TextView) v.findViewById(R.id.unit);
-            TextView sScore = (TextView) v.findViewById(R.id.sScore);
+            //region UI componenten toekennen
+            TextView id = (TextView) v.findViewById(R.id.id);
+            TextView description = (TextView) v.findViewById(R.id.beschrijving);
+            TextView time = (TextView) v.findViewById(R.id.tijd);
+            TextView date = (TextView) v.findViewById(R.id.datum);
+            TextView amount = (TextView) v.findViewById(R.id.hoeveelheid);
+            TextView unit = (TextView) v.findViewById(R.id.eenheid);
+            TextView sScore = (TextView) v.findViewById(R.id.tScore);
             TextView pScore = (TextView) v.findViewById(R.id.pScore);
+            //endregion
 
             DateFormat df = new SimpleDateFormat("H:mm");
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-            //String t = String.valueOf(l.getId());
-            // check to see if each individual textview is null.
-            // if not, assign some text!
+
+            // Waarden toekennen aan de textViews.
             if (id != null){
                 id.setText(String.valueOf(l.getId()));
             }
             if (description != null){
-                description.setText(l.getDescription());
+                description.setText(l.getBeschrijving());
             }
             if (time != null){
-                time.setText(df.format(l.getTime()));
+                time.setText(df.format(l.getTijd()));
             }
             if (date != null){
-                amount.setText(sdf.format(l.getDate()));
+                amount.setText(sdf.format(l.getDatum()));
             }
             if (unit != null){
-                unit.setText(l.getUnit());
+                unit.setText(l.getEenheid());
             }
             if (amount != null){
-                amount.setText(String.valueOf(l.getAmount()));
+                amount.setText(String.valueOf(l.getHoeveelheid()));
             }
             if (pScore != null){
 
                 int c = Color.BLACK;
 
+                // Kleurschaal toekennen
                 if(l.getpScore() >= 0 && l.getpScore() < 3) c = Color.GREEN;
                 else if(l.getpScore() > 7 && l.getpScore() <= 10) c = Color.RED;
 
@@ -112,8 +113,9 @@ public class LoggingsAdapter extends ArrayAdapter<Logging> {
             }
             if (sScore != null){
                 int c = Color.BLACK;
-                int score = l.getsScore();
+                int score = l.gettScore();
 
+                // Kleurschaal toekennen
                 if (score >= 0 && score < 3) c = Color.RED;
                 else if(score > 7 && score <= 10) c = Color.GREEN;
 
@@ -123,7 +125,7 @@ public class LoggingsAdapter extends ArrayAdapter<Logging> {
 
         }
 
-        // the view must be returned to our activity
+        // de view teruggeven
         return v;
 
     }

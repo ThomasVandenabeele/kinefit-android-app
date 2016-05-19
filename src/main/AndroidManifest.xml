@@ -10,6 +10,7 @@
         android:configChanges="keyboardHidden|orientation"
         android:label="@string/app_name"
         android:icon="@drawable/icon">
+
         <activity android:name=".activities.LoginActivity"
                     android:label="KineFit - Login">
         </activity>
@@ -24,30 +25,34 @@
         </activity>
 
         <activity
-            android:name=".activities.NewLoggingActivity"
+            android:name=".activities.NieuweLoggingActivity"
             android:label="KineFit - Logboek">
 
         </activity>
 
         <activity
-            android:name=".activities.StepActivity"
+            android:name=".activities.StapActivity"
             android:label="KineFit - Stappen" >
         </activity>
 
-        <activity android:name=".activities.DiaryActivity"
+        <activity
+            android:name=".activities.LogboekActivity"
             android:label="KineFit - Logboek">
 
         </activity>
 
-        <activity android:name=".activities.TaskActivity"
+        <activity
+            android:name=".activities.TakenActivity"
             android:label="KineFit - Taken">
 
         </activity>
 
-        <activity android:name=".activities.RegisterActivity"
+        <activity
+            android:name=".activities.RegisterActivity"
             android:label="KineFit"></activity>
 
-        <receiver android:name=".services.BootBroadcastReceiver">
+        <receiver
+            android:name=".services.BootBroadcastReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
