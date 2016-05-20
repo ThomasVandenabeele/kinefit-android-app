@@ -86,7 +86,7 @@
 
         <TextView
             android:id="@+id/beschrijving"
-            android:layout_width="230dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingTop="6dip"
             android:paddingLeft="6dip"

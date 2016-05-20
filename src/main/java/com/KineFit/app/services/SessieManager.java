@@ -1,62 +1,107 @@
 package com.KineFit.app.services;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.Intent;
-import android.hardware.camera2.params.StreamConfigurationMap;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 
 import com.KineFit.app.activities.LoginActivity;
 
+import java.util.Calendar;
+import java.util.TimeZone;
+
 /**
+ * SessieManager klasse.
+ * Met deze klasse kan men de opgeslagen ingelogde gebruiker ophalen,
+ * kijken of er gebruiker is ingelogd en de referenties opvragen.
  * Created by Thomas on 17/05/16.
  */
 public class SessieManager {
-    // Shared Preferences
-    SharedPreferences pref;
 
-    // Editor voor Shared preferences
-    Editor editor;
+    //region DATAMEMBERS
 
-    // Context
-    Context _context;
+    /** SharedPreferences om waarden op te slaan */
+    private SharedPreferences instellingen;
 
-    // Shared pref mode
+    /** Editor om instellingen te veranderen */
+    private Editor editor;
+
+    /*+ De huidige context */
+    private Context _context;
+
+    /** Instellingen modus: privaat */
     int PRIVATE_MODE = 0;
 
-    // tags
-    private static final String PREF_NAME = "KineFitPref";
-    private static final String IS_LOGIN = "IsLoggedIn";
-    private static final String KEY_USERNAME = "username";
-    private static final String KEY_EMAIL = "email";
-    private static final String KEY_NAAM = "naam";
-    private static final String KEY_VOORNAAM = "voornaam";
-    private static final String KEY_REMEMBERED_USER = "remUsername";
+    static PendingIntent pendingIntent;
+    static AlarmManager alarmManager;
 
-    // Constructor
+    //endregion
+
+    //region TAGS
+
+    /** Key voor instellingen naam */
+    private static final String KEY_INSTELLINGEN = "KineFitInstellingen";
+
+    /** Key voor boolean is ingelogd */
+    private static final String IS_LOGIN = "IsIngelogd";
+
+    /** Key voor gebruikersnaarm */
+    private static final String KEY_GEBRUIKERSNAAM = "gebruikersnaam";
+
+    /** Key voor email */
+    private static final String KEY_EMAIL = "email";
+
+    /** Key voor naam */
+    private static final String KEY_NAAM = "naam";
+
+    /** Key voor voornaam */
+    private static final String KEY_VOORNAAM = "voornaam";
+
+    /** Key voor boolean herinner mij */
+    private static final String KEY_HERINNER_MIJ = "herinnerGebruiker";
+
+    //endregion
+
+    /**
+     * Constructor voor SessieManager.
+     * @param context de context
+     */
     public SessieManager(Context context){
         this._context = context;
-        pref = _context.getSharedPreferences(PREF_NAME, PRIVATE_MODE);
-        editor = pref.edit();
+
+        // Instellingen en editor instantiëren
+        instellingen = _context.getSharedPreferences(KEY_INSTELLINGEN, PRIVATE_MODE);
+        editor = instellingen.edit();
     }
 
     /**
-     * Maak login sessie
-     * @param naam gebruikersnaam
-     * */
-    public void createLoginSession(String gebruikersnaam, String naam, String voornaam, String email, Boolean remembered){
+     * Maak login sessie aan
+     * @param gebruikersnaam de gebruikersnaam
+     * @param naam naam van gebruiker
+     * @param voornaam voornaam van gebruiker
+     * @param email email van gebruiker
+     * @param onthouden onthouden of niet
+     */
+    public void createLoginSession(String gebruikersnaam, String naam, String voornaam, String email, Boolean onthouden){
+        if(gebruikersnaam == null) return;
+
         editor.putBoolean(IS_LOGIN, true);
-        editor.putString(KEY_USERNAME, gebruikersnaam);
+        editor.putString(KEY_GEBRUIKERSNAAM, gebruikersnaam);
         editor.putString(KEY_NAAM, naam);
         editor.putString(KEY_VOORNAAM, voornaam);
         editor.putString(KEY_EMAIL, email);
 
-        if(remembered) editor.putString(KEY_REMEMBERED_USER, gebruikersnaam);
-        else editor.remove(KEY_REMEMBERED_USER);
+        if(onthouden) editor.putString(KEY_HERINNER_MIJ, gebruikersnaam);
+        else editor.remove(KEY_HERINNER_MIJ);
 
         editor.commit();
 
-        launchStepsService();
+        // Start stap service
+        startStapService();
     }
 
     /**
@@ -65,10 +110,11 @@ public class SessieManager {
      * Indien wel, gebeurt er niets.
      * */
     public void checkLogin(){
+
         // Check login status
-        if(!this.isLoggedIn()){
+        if(!this.isLoggedIn() && !isInternetBeschikbaar()){
             // wanneer gebruiker niet is ingelogd --> naar loginpagina!
-            launchLoginActivity();
+            startLoginActivity();
         }
 
     }
@@ -77,46 +123,63 @@ public class SessieManager {
      * Get de ingelogde gebruikersnaam
      * */
     public String getUsername(){
-        return pref.getString(KEY_USERNAME, null);
+        return instellingen.getString(KEY_GEBRUIKERSNAAM, null);
     }
 
     /**
-     * Loguit
+     * Log de gebruiker uit
      * */
     public void logoutUser(){
-        String rem = pref.getString(KEY_REMEMBERED_USER, null);
+
+        AlarmManager am = (AlarmManager) _context.getSystemService(Context.ALARM_SERVICE);
+        Intent downloader = new Intent(_context, StartTaakServiceOntvanger.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(_context, 10, downloader, 0);
+        am.cancel(pendingIntent);
+
+        String rem = instellingen.getString(KEY_HERINNER_MIJ, null);
         editor.clear();
-        if(rem != null) editor.putString(KEY_REMEMBERED_USER, rem);
+        if(rem != null) editor.putString(KEY_HERINNER_MIJ, rem);
         editor.commit();
 
         // Bij loguit, terug naar loginactivity!
-        launchLoginActivity();
+        startLoginActivity();
     }
 
     /**
-     * Quick check voor login
+     * Geeft terug of er een gebruiker is ingelogd
      * **/
     public boolean isLoggedIn(){
-        return pref.getBoolean(IS_LOGIN, false);
-    }
-
-
-    public String getVoornaam(){
-        return pref.getString(KEY_VOORNAAM, null);
-    }
-
-    public String getVolledigeNaam(){
-        return pref.getString(KEY_NAAM, null) + " " + pref.getString(KEY_VOORNAAM, null);
-    }
-
-    public String getHerinnerdeGebruiker(){
-        return pref.getString(KEY_REMEMBERED_USER, null);
+        return instellingen.getBoolean(IS_LOGIN, false);
     }
 
     /**
-     * Stopt alle activities en start loginactivity.
+     * Geeft de voornaam van de ingelogde gebruiker terug
+     * @return voornaam
      */
-    private void launchLoginActivity(){
+    public String getVoornaam(){
+        return instellingen.getString(KEY_VOORNAAM, null);
+    }
+
+    /**
+     * Geeft de volledige naam (naam voornaam) terug van ingelogde gebruiker
+     * @return naam voornaam
+     */
+    public String getVolledigeNaam(){
+        return instellingen.getString(KEY_NAAM, null) + " " + instellingen.getString(KEY_VOORNAAM, null);
+    }
+
+    /**
+     * Heeft de herinnerde gebruikersnaam terug
+     * @return herinnerde gebruikersnaam
+     */
+    public String getHerinnerdeGebruiker(){
+        return instellingen.getString(KEY_HERINNER_MIJ, null);
+    }
+
+    /**
+     * Start loginactivity.
+     */
+    private void startLoginActivity(){
         Intent i = new Intent(_context, LoginActivity.class);
         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -125,8 +188,44 @@ public class SessieManager {
         _context.startActivity(i);
     }
 
-    private void launchStepsService(){
-        Intent i = new Intent(_context, RegisterStepsService.class);
+    /**
+     * Start RegistreerStappen service
+     */
+    private void startStapService(){
+        setRecurringAlarm(_context);
+        Intent i = new Intent(_context, RegistreerStappenService.class);
         _context.startService(i);
     }
+
+    /**
+     * Geeft terug of er een connectie is met het internet
+     * @return true of false
+     */
+    public boolean isInternetBeschikbaar() {
+        ConnectivityManager connectivityManager = (ConnectivityManager) _context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
+
+    /**
+     * Stel herhalende alarm in.
+     * Momenteel om het kwartier.
+     * @param context de context
+     */
+    private void setRecurringAlarm(Context context) {
+
+        Calendar updateTime = Calendar.getInstance();
+        updateTime.setTimeZone(TimeZone.getDefault());
+        updateTime.set(Calendar.HOUR_OF_DAY, 12);
+        updateTime.set(Calendar.MINUTE, 30);
+        Intent downloader = new Intent(context, StartTaakServiceOntvanger.class);
+        downloader.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+        pendingIntent = PendingIntent.getBroadcast(context, 10, downloader, 0);
+        alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, updateTime.getTimeInMillis(), AlarmManager.INTERVAL_FIFTEEN_MINUTES, pendingIntent);
+
+
+    }
+
 }

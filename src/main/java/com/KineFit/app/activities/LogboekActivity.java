@@ -145,6 +145,7 @@ public class LogboekActivity extends BasisActivity {
             public void onClick(View v) {
                 // Start NieuweLoggingActivity
                 Intent i = new Intent(getApplicationContext(), NieuweLoggingActivity.class);
+                i.putExtra("datum", sdf_sql.format(cvKalender.getDate()));
                 startActivity(i);
             }
 

@@ -1,6 +1,10 @@
 package com.KineFit.app.activities;
 
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -37,6 +41,9 @@ public class DashboardActivity extends BasisActivity {
     /** Textview voor het welkom-bericht */
     private TextView txtWelkom;
 
+    /** Boolean om eerste lading te checken */
+    private Boolean eersteKeer = true;
+
     //endregion
 
     //region REST: TAGS & URL
@@ -46,6 +53,9 @@ public class DashboardActivity extends BasisActivity {
 
     /** URL om het aantal nieuwe taken op te vragen */
     private static String url_get_nieuwe_taken = "http://thomasvandenabeele.no-ip.org/KineFit/get_count_new_tasks.php";
+
+    /** Tag voor gebruikersnaarm */
+    private static final String TAG_GEBRUIKERSNAAM = "username";
 
     /** Tag voor succes-waarde */
     private static final String TAG_SUCCES = "success";
@@ -79,6 +89,8 @@ public class DashboardActivity extends BasisActivity {
 
             @Override
             public void onClick(View view) {
+                eersteKeer = false;
+
                 // Start StapActivity
                 Intent i = new Intent(getApplicationContext(), StapActivity.class);
                 i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_SINGLE_TOP);
@@ -90,6 +102,8 @@ public class DashboardActivity extends BasisActivity {
         btnTaken.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                eersteKeer = false;
+
                 // Start TakenActivity
                 Intent i = new Intent(getApplicationContext(), TakenActivity.class);
                 i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_SINGLE_TOP);
@@ -111,13 +125,24 @@ public class DashboardActivity extends BasisActivity {
 
         });
 
+    }
+
+
+    /**
+     * Kijk voor nieuwe taken bij herstarten activitykjbjk
+     */
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        System.out.println("opnieuw");
+
         // Als er ingelogde gebruiker is: tel ongelezen taken (async taak).
         if(sessie.isLoggedIn()) {
             ContentValues params = new ContentValues();
-            params.put("username", sessie.getUsername());
+            params.put(TAG_GEBRUIKERSNAAM, sessie.getUsername());
             new CountNewTasks().execute(params);
         }
-
     }
 
     /**
@@ -152,8 +177,13 @@ public class DashboardActivity extends BasisActivity {
          * Methode voor na uitvoering taak.
          * Update de UI door het aantal nieuwe taken weer te geven als deze verschillend is van 0.
          * **/
-        protected void onPostExecute(int aantal) {
-            if(aantal != 0) btnTaken.setText(btnTaken.getText() + " (" + aantal + ")");
+        protected void onPostExecute(Integer aantal) {
+            if(aantal != 0) {
+                btnTaken.setText("Taken" + " (" + aantal + ")");
+            }
+            else{
+                btnTaken.setText("Taken");
+            }
         }
 
     }

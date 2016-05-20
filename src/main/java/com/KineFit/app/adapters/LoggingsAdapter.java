@@ -40,26 +40,24 @@ public class LoggingsAdapter extends ArrayAdapter<Logging> {
     /**
      * In deze methode leggen we vast hoe ieder item er moet uitzien.
      * @param position positie
-     * @param convertView view
+     * @param x view
      * @param parent viewGroup
      * @return View
      */
     @Override
-    public View getView(int position, View convertView, ViewGroup parent){
+    public View getView(int position, View x, ViewGroup parent){
 
-        View v = convertView;
+        View v = null;
+        
+        // Definieer layout
+        LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        v = inflater.inflate(R.layout.logs_list_item, null);
 
-        if (v == null) {
-            // Definieer layout
-            LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            v = inflater.inflate(R.layout.logs_list_item, null);
-
-            // Alternerende kleuren voor achtergrond
-            if (position % 2 == 1) {
-                v.setBackgroundColor(Color.rgb(202, 225, 143));//Color.rgb(246, 164, 134));
-            } else {
-                v.setBackgroundColor(Color.WHITE);
-            }
+        // Alternerende kleuren voor achtergrond
+        if (position % 2 == 1) {
+            v.setBackgroundColor(Color.rgb(202, 225, 143));//Color.rgb(246, 164, 134));
+        } else {
+            v.setBackgroundColor(Color.WHITE);
         }
 
         Logging l = logs.get(position);

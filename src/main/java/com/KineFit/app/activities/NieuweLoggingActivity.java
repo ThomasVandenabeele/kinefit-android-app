@@ -29,6 +29,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.sql.Date;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -69,6 +71,9 @@ public class NieuweLoggingActivity extends BasisActivity {
     /** CheckBox voor verschillend tijdstip te kiezen */
     private CheckBox cbVerschillendTijdstip;
 
+    /** CheckBox voor een andere datum te kiezen */
+    private CheckBox cbAndereDatum;
+
     /** TextView voor de geselecteerde datum weer te geven */
     private TextView txtGeselecteerdeDatum;
 
@@ -89,6 +94,9 @@ public class NieuweLoggingActivity extends BasisActivity {
 
     /** Korte datum formatter */
     SimpleDateFormat korteDatum = new SimpleDateFormat("dd-MM-yyyy");
+
+    /** Korte datum formatter */
+    SimpleDateFormat kalenderKorteDatum = new SimpleDateFormat("yyyy-MM-dd");
 
     /** Korte tijd formatter */
     SimpleDateFormat korteTijd = new SimpleDateFormat("HH:mm");
@@ -171,6 +179,7 @@ public class NieuweLoggingActivity extends BasisActivity {
         //region UI componenten toekennen
         txtGeselecteerdeDatum = (TextView) findViewById(R.id.geselecteerdeDatum);
         txtNieuwLogType = (TextView) findViewById(R.id.nieuwLogType);
+        cbAndereDatum = (CheckBox) findViewById(R.id.cbAndereDatum);
         cbVerschillendTijdstip = (CheckBox) findViewById(R.id.cbVerschillendTijdstip);
         spType = (Spinner) findViewById(R.id.spType);
         txtEenheid = (TextView) findViewById(R.id.txtEenheid);
@@ -185,9 +194,25 @@ public class NieuweLoggingActivity extends BasisActivity {
         // Laad spinner voor logs type
         new LaadLoggingsType().execute();
 
-        // Stel huidige datum in als geselecteerd
-        geselecteerdeDatum = Calendar.getInstance().getTime();
-        txtGeselecteerdeDatum.setText(korteDatum.format(geselecteerdeDatum) + " om " + korteTijd.format(geselecteerdeDatum));
+        try {
+            // Stel juiste datum in
+            Calendar kalender = Calendar.getInstance();
+            java.util.Date d = kalenderKorteDatum.parse(getIntent().getStringExtra("datum"));
+            kalender.setTime(d);
+
+            Calendar vandaag = Calendar.getInstance();
+
+            if (kalender.get(Calendar.YEAR) == vandaag.get(Calendar.YEAR)
+                    && kalender.get(Calendar.DAY_OF_YEAR) == vandaag.get(Calendar.DAY_OF_YEAR)) {
+                kalender.set(Calendar.HOUR_OF_DAY, vandaag.get(Calendar.HOUR_OF_DAY));
+                kalender.set(Calendar.MINUTE, vandaag.get(Calendar.MINUTE));
+            }
+
+            geselecteerdeDatum = kalender.getTime();
+            txtGeselecteerdeDatum.setText(korteDatum.format(geselecteerdeDatum) + " om " + korteTijd.format(geselecteerdeDatum));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
 
         // OnClickListener voor nieuw logtype
         txtNieuwLogType.setOnClickListener(new View.OnClickListener() {
@@ -203,21 +228,36 @@ public class NieuweLoggingActivity extends BasisActivity {
                     @Override
                     public void onClick(View view) {
                         //region UI componenten toekennen
-                        TextView beschrijving = (TextView) dialogView.findViewById(R.id.newLog_Description);
-                        TextView eenheid = (TextView) dialogView.findViewById(R.id.newLog_Unit);
+                        EditText beschrijving = (EditText) dialogView.findViewById(R.id.newLog_Description);
+                        EditText eenheid = (EditText) dialogView.findViewById(R.id.newLog_Unit);
                         //endregion
 
-                        // Maak het nieuwe type aan via async task
-                        ContentValues parameters = new ContentValues();
-                        parameters.put(TAG_NIEUW_TYPE_BESCHRIJVING, beschrijving.getText().toString());
-                        parameters.put(TAG_NIEUW_TYPE_EENHEID, eenheid.getText().toString());
-                        new MaakNieuwLoggingsType().execute(parameters);
+                        // Validatie
+                        boolean fout = false;
 
-                        // Verberg het dialoogvenster
-                        alertDialog.dismiss();
+                        if(isLeeg(beschrijving)){
+                            fout = true;
+                            beschrijving.setError("Geef een beschrijving!");
+                        }
+                        if(isLeeg(eenheid)){
+                            fout = true;
+                            eenheid.setError("Geef een eenheid!");
+                        }
 
-                        // Herlaad de logstype spinner
-                        new LaadLoggingsType().execute();
+                        if(!fout){
+                            // Maak het nieuwe type aan via async task
+                            ContentValues parameters = new ContentValues();
+                            parameters.put(TAG_NIEUW_TYPE_BESCHRIJVING, beschrijving.getText().toString());
+                            parameters.put(TAG_NIEUW_TYPE_EENHEID, eenheid.getText().toString());
+                            new MaakNieuwLoggingsType().execute(parameters);
+
+                            // Verberg het dialoogvenster
+                            alertDialog.dismiss();
+
+                            // Herlaad de logstype spinner
+                            new LaadLoggingsType().execute();
+                        }
+
                     }});
 
                 alertDialog.setView(dialogView);
@@ -226,13 +266,14 @@ public class NieuweLoggingActivity extends BasisActivity {
 
         });
 
-        // OnCheckedChangeListener voor de checkbox voor een verschillend tijdstip
-        cbVerschillendTijdstip.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        // OnCheckedChangeListener voor de checkbox voor andere datum
+        cbAndereDatum.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 
                 // Aangevinkt of niet?
                 if(isChecked){
+                    cbVerschillendTijdstip.setEnabled(false);
                     // Dialoogvenster om een nieuwe datum te kiezen
                     final View dialogView = View.inflate(NieuweLoggingActivity.this, R.layout.datum_en_tijd_picker, null);
                     final AlertDialog alertDialog = new AlertDialog.Builder(NieuweLoggingActivity.this).create();
@@ -243,6 +284,8 @@ public class NieuweLoggingActivity extends BasisActivity {
                             //region UI componenten toekennen
                             DatePicker datumPicker = (DatePicker) dialogView.findViewById(R.id.date_picker);
                             TimePicker tijdPicker = (TimePicker) dialogView.findViewById(R.id.time_picker);
+                            tijdPicker.setIs24HourView(true);
+                            tijdPicker.setCurrentHour(Calendar.getInstance().get(Calendar.HOUR_OF_DAY));
                             //endregion
 
                             // Haal geselecteerde datum/tijd op
@@ -264,13 +307,76 @@ public class NieuweLoggingActivity extends BasisActivity {
                     alertDialog.show();
                 }
                 else{
+                    cbVerschillendTijdstip.setEnabled(true);
+                    cbVerschillendTijdstip.setChecked(false);
                     // Anders de huidige datum kiezen
-                    geselecteerdeDatum = Calendar.getInstance().getTime();
-                    txtGeselecteerdeDatum.setText(korteDatum.format(geselecteerdeDatum) + " om " + korteTijd.format(geselecteerdeDatum));
+                    try {
+                        Calendar kalender = Calendar.getInstance();
+                        kalender.setTime(kalenderKorteDatum.parse(getIntent().getStringExtra("datum")));
+                        geselecteerdeDatum = kalender.getTime();
+                        txtGeselecteerdeDatum.setText(korteDatum.format(geselecteerdeDatum) + " om " + korteTijd.format(geselecteerdeDatum));
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
                 }
 
             }
         });
+
+        // OnCheckedChangeListener voor de checkbox voor een verschillend tijdstip
+        cbVerschillendTijdstip.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+
+                // Aangevinkt of niet?
+                if(isChecked){
+                    // Dialoogvenster om een nieuwe datum te kiezen
+                    final View dialogView = View.inflate(NieuweLoggingActivity.this, R.layout.tijd_picker, null);
+                    final AlertDialog alertDialog = new AlertDialog.Builder(NieuweLoggingActivity.this).create();
+
+                    dialogView.findViewById(R.id.set_datum_tijd).setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            //region UI componenten toekennen
+                            TimePicker tijdPicker = (TimePicker) dialogView.findViewById(R.id.time_picker);
+                            tijdPicker.setIs24HourView(true);
+                            tijdPicker.setCurrentHour(Calendar.getInstance().get(Calendar.HOUR_OF_DAY));
+                            //endregion
+
+                            // Haal geselecteerde datum/tijd op
+                            Calendar kalender = Calendar.getInstance();
+                            kalender.setTime(geselecteerdeDatum);
+                            kalender.set(Calendar.HOUR_OF_DAY, tijdPicker.getCurrentHour());
+                            kalender.set(Calendar.MINUTE, tijdPicker.getCurrentMinute());
+
+                            // Stel deze datum in
+                            geselecteerdeDatum = kalender.getTime();
+                            txtGeselecteerdeDatum.setText(korteDatum.format(kalender.getTime()) + " om " + korteTijd.format(kalender.getTime()));
+
+                            // Verberg het dialoogvenster
+                            alertDialog.dismiss();
+                        }});
+
+                    alertDialog.setView(dialogView);
+                    alertDialog.show();
+                }
+                else{
+                    cbVerschillendTijdstip.setChecked(false);
+                    // Anders de huidige datum kiezen
+                    try {
+                        Calendar kalender = Calendar.getInstance();
+                        kalender.setTime(kalenderKorteDatum.parse(getIntent().getStringExtra("datum")));
+                        geselecteerdeDatum = kalender.getTime();
+                        txtGeselecteerdeDatum.setText(korteDatum.format(geselecteerdeDatum) + " om " + korteTijd.format(geselecteerdeDatum));
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+            }
+        });
+
+
 
         // OnItemSelectedListener voor het type te kiezen
         spType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -334,21 +440,37 @@ public class NieuweLoggingActivity extends BasisActivity {
             @Override
             public void onClick(View v) {
 
-                // TODO: VALIDATIE !!!!!!!!!!!!!!!!!!!!!!!!!!
+                boolean fout = false;
 
-                // Maak de nieuwe logging aan
-                ContentValues parameters = new ContentValues();
-                parameters.put(TAG_NIEUW_LOGGING_GEBRUIKERSNAAM, sessie.getUsername());
-                parameters.put(TAG_NIEUW_LOGGING_TYPE_ID, ((Logs_Type)(spType.getSelectedItem())).getId());
-                parameters.put(TAG_NIEUW_LOGGING_HOEVEELHEID, Integer.valueOf(etHoeveelheid.getText().toString()));
-                parameters.put(TAG_NIEUW_LOGGING_TSCORE, Integer.valueOf(txtTScore.getText().toString()));
-                parameters.put(TAG_NIEUW_LOGGING_PSCORE, Integer.valueOf(txtPScore.getText().toString()));
-                parameters.put(TAG_NIEUW_LOGGING_DATUM, String.valueOf(sqlDatumString.format(geselecteerdeDatum)));
-                new MaakNieuweLogging().execute(parameters);
+                if(isLeeg(etHoeveelheid)) {
+                    fout = true;
+                    etHoeveelheid.setError("Geef een hoeveelheid in!");
+                }
+
+                if(!fout){
+                    // Maak de nieuwe logging aan
+                    ContentValues parameters = new ContentValues();
+                    parameters.put(TAG_NIEUW_LOGGING_GEBRUIKERSNAAM, sessie.getUsername());
+                    parameters.put(TAG_NIEUW_LOGGING_TYPE_ID, ((Logs_Type)(spType.getSelectedItem())).getId());
+                    parameters.put(TAG_NIEUW_LOGGING_HOEVEELHEID, Integer.valueOf(etHoeveelheid.getText().toString()));
+                    parameters.put(TAG_NIEUW_LOGGING_TSCORE, Integer.valueOf(txtTScore.getText().toString()));
+                    parameters.put(TAG_NIEUW_LOGGING_PSCORE, Integer.valueOf(txtPScore.getText().toString()));
+                    parameters.put(TAG_NIEUW_LOGGING_DATUM, String.valueOf(sqlDatumString.format(geselecteerdeDatum)));
+                    new MaakNieuweLogging().execute(parameters);
+                }
 
             }
         });
 
+    }
+
+    /**
+     * Methode om te kijken of een EditText leeg is.
+     * @param editText EditText voor check
+     * @return true bij leeg, anders false
+     */
+    private boolean isLeeg(EditText editText) {
+        return editText.getText().toString().trim().length() == 0;
     }
 
 

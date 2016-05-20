@@ -1,7 +1,15 @@
 package com.KineFit.app.activities;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -65,4 +73,5 @@ public class BasisActivity extends Activity{
                 return super.onOptionsItemSelected(item);
         }
     }
+
 }

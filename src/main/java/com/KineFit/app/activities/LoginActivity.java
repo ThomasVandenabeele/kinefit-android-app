@@ -1,11 +1,14 @@
 package com.KineFit.app.activities;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.ContentValues;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -162,6 +165,24 @@ public class LoginActivity extends Activity {
             herinnerMij.setChecked(false);
         }
 
+        if(!sessie.isInternetBeschikbaar()){
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setIcon(android.R.drawable.ic_dialog_alert);
+                builder.setMessage("Connecteer met Internet of stop KineFit!")
+                        .setCancelable(false)
+                        .setPositiveButton("Connecteer", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
+                            }
+                        })
+                        .setNegativeButton("Afsluiten", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                finishAffinity();
+                            }
+                        });
+                AlertDialog alert = builder.create();
+                alert.show();
+        }
     }
 
     /**

@@ -24,10 +24,11 @@
     <!-- Name Label -->
     <TextView
         android:id="@+id/task_name"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="75dp"
         android:paddingTop="6dip"
         android:paddingLeft="6dip"
+        android:paddingRight="100dp"
         android:textSize="17dip"
         android:textStyle="bold"
         android:text="test"
@@ -44,6 +45,7 @@
         android:padding="10dp"
         android:textSize="12dip"
         android:textStyle="normal"
+        android:layout_centerVertical="true"
         android:text="bla"
         android:layout_marginLeft="20dp"
         android:layout_marginTop="10dp"

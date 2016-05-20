@@ -16,6 +16,7 @@ import com.KineFit.app.services.JSONParser;
 import com.jjoe64.graphview.DefaultLabelFormatter;
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.helper.DateAsXAxisLabelFormatter;
+import com.jjoe64.graphview.series.BarGraphSeries;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
 
@@ -28,7 +29,14 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.ConcurrentModificationException;
+import java.util.Dictionary;
+import java.util.Enumeration;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
 
 /**
  * Activity voor het stappen scherm.
@@ -178,6 +186,8 @@ public class StapActivity extends BasisActivity {
                 return super.formatLabel(value, isValueX);
             }
         });
+
+        stapGrafiek.getGridLabelRenderer().setVerticalAxisTitle("Stappen per uur");
 
         // Stel week en jaarnummer in op huidige week
         weekNummer = new GregorianCalendar().get(Calendar.WEEK_OF_YEAR);
@@ -406,51 +416,91 @@ public class StapActivity extends BasisActivity {
             // pDialog sluiten
             pDialog.dismiss();
 
+            // Seconden verwijderen, daarna alle stappen samentellen per minuut.
+            // TreeMap sorteert automatisch op datum.
+            Map<Date, Integer> punten = new TreeMap<Date, Integer>();
+
+            for(Stap s : staps){
+                Calendar kalender = Calendar.getInstance();
+                kalender.setTime(s.getGemDateTime());
+                kalender.set(Calendar.MINUTE, 0);
+                kalender.set(Calendar.SECOND, 0);
+                kalender.set(Calendar.MILLISECOND, 0);
+
+                Date d = new java.sql.Date(kalender.getTime().getTime());
+                if(punten.containsKey(d)){
+                    int aantal = punten.get(d);
+                    punten.remove(d);
+                    punten.put(d, aantal+s.getAantalStappen());
+                }
+                else{
+                    punten.put(d, s.getAantalStappen());
+                }
+            }
+
             int maxAantalStappen=0;
-            DataPoint[] waarden = new DataPoint[staps.size()];
+            DataPoint[] waarden = new DataPoint[punten.size()];
 
             // Datapunten maken van stappen + max aantal stappen bepalen
-            for (int i = 0; i< staps.size(); i++) {
-                Stap s = staps.get(i);
+            int i = 0;
+            for(Map.Entry<Date, Integer> e : punten.entrySet()){
+                if(e.getValue() > maxAantalStappen) maxAantalStappen = e.getValue();
 
-                if(s.getAantalStappen() > maxAantalStappen) maxAantalStappen= s.getAantalStappen();
-
-                DataPoint dp = new DataPoint(s.getGemDateTime(), s.getAantalStappen());
+                DataPoint dp = new DataPoint(e.getKey(), e.getValue());
                 waarden[i] = dp;
+                i++;
             }
 
             // Grenzen vastleggen voor X én Y
-            Date start = new Date(0, 0, 0), eind = new Date(0, 0, 0);
+            try {
+                stapGrafiek.getViewport().setMinX(new Date(sqlDatumFormatter.parse(startDatum).getTime()).getTime());
+                stapGrafiek.getViewport().setMaxX(new Date(sqlDatumFormatter.parse(eindDatum).getTime()).getTime());
+                stapGrafiek.getViewport().setXAxisBoundsManual(true);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
             if(staps.size()>0) {
-                try {
-                    start = new java.sql.Date(sqlDatumFormatter.parse(startDatum).getTime());
-                    eind = new java.sql.Date(sqlDatumFormatter.parse(eindDatum).getTime());
-
-                    stapGrafiek.getViewport().setMinX(start.getTime());
-                    stapGrafiek.getViewport().setMaxX(eind.getTime());
-                    stapGrafiek.getViewport().setXAxisBoundsManual(true);
-
-                    stapGrafiek.getViewport().setMinY((int) 0);
-                    stapGrafiek.getViewport().setMaxY((int) maxAantalStappen+5);
-                    stapGrafiek.getViewport().setYAxisBoundsManual(true);
-
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
-
+                stapGrafiek.getViewport().setMinY(0);
+                stapGrafiek.getViewport().setMaxY(maxAantalStappen+5);
+                stapGrafiek.getViewport().setYAxisBoundsManual(true);
             }
 
             // Data serie toekennen aan grafiek
             stapGrafiek.removeAllSeries();
-            if(staps.size()>0){
-                LineGraphSeries<DataPoint> series = new LineGraphSeries<DataPoint>(waarden);
+            System.out.println("verwijderd " + punten.size());
+            if(punten.size()>0){
+                BarGraphSeries<DataPoint> series = new BarGraphSeries<DataPoint>(waarden);
                 stapGrafiek.addSeries(series);
+                series.setSpacing(10);
+                series.setDrawValuesOnTop(true);
+                series.setValuesOnTopColor(Color.RED);
                 series.setColor(Color.rgb(241, 104, 54));
             }
 
             // Geselecteerde week instellen in UI
-            selectedWeekSteps.setText("Week = " + weekNummer + " (" + korteDatum.format(start) + " - " + korteDatum.format(eind) + ")");
+            try{
+                selectedWeekSteps.setText("Week " + weekNummer + "\n("
+                        + korteDatum.format(sqlDatumFormatter.parse(startDatum))
+                        + " - "
+                        + korteDatum.format(sqlDatumFormatter.parse(eindDatum)) + ")");
+            } catch (ParseException e){
+                e.printStackTrace();
+            }
+
         }
+
+    }
+
+
+    public Map.Entry<Date, Integer> getEntry(Map<Date, Integer> map, int i)
+    {
+        Set<Map.Entry<Date, Integer>> entries = map.entrySet();
+        int j = 0;
+
+        for(Map.Entry<Date, Integer> entry : entries)
+            if(j++ == i) return entry;
+
+        return null;
 
     }
 

@@ -117,6 +117,12 @@ public class TakenActivity extends BasisActivity {
     /** URL om het de status van een taak te updaten */
     private static String url_update_taak_status = "http://thomasvandenabeele.no-ip.org/KineFit/update_status_task.php";
 
+    /** ID van de status */
+    private static final String TAG_STATUS_ID = "id";
+
+    /** Naam van de status */
+    private static final String TAG_STATUS_NAAM = "name";
+
     //-------------------------------------------------------------------------------------------------------------------------------//
 
     //endregion
@@ -196,7 +202,7 @@ public class TakenActivity extends BasisActivity {
                 if(t.getStatus().equals(TaskStatus.OPEN)||t.getStatus().equals(TaskStatus.NEW)){
                     final String pid = ((TextView) view.findViewById(R.id.task_pid)).getText().toString();
                     final ContentValues parameters = new ContentValues();
-                    parameters.put(TAG_ID, pid);
+                    parameters.put(TAG_STATUS_ID, pid);
 
                     // Maak alert venster
                     new AlertDialog.Builder(TakenActivity.this)
@@ -205,7 +211,7 @@ public class TakenActivity extends BasisActivity {
                             .setPositiveButton("Geslaagd",
                                     new DialogInterface.OnClickListener() {
                                         public void onClick(DialogInterface dialog, int id) {
-                                            parameters.put(TAG_NAAM, TaskStatus.DONE.toString());
+                                            parameters.put(TAG_STATUS_NAAM, TaskStatus.DONE.toString());
                                             new UpdateTaakStatus().execute(parameters);
 
                                             // Sluit alert
@@ -215,7 +221,7 @@ public class TakenActivity extends BasisActivity {
                             .setNeutralButton("Gefaald",
                                     new DialogInterface.OnClickListener() {
                                         public void onClick(DialogInterface dialog, int id) {
-                                            parameters.put(TAG_NAAM, TaskStatus.FAILED.toString());
+                                            parameters.put(TAG_STATUS_NAAM, TaskStatus.FAILED.toString());
                                             new UpdateTaakStatus().execute(parameters);
 
                                             // Sluit alert
@@ -281,17 +287,26 @@ public class TakenActivity extends BasisActivity {
                     // Omzetten in ArrayList<Taak>
                     for (int i = 0; i < tasks.length(); i++) {
                         JSONObject c = tasks.getJSONObject(i);
-                        boolean add = true;
 
-                        Date creation_date = new java.sql.Date(korteDatum.parse(c.getString(TAG_AANMAAKDATUM)).getTime());
+                        java.sql.Date aanmaakDatum = new java.sql.Date(sqlDatumFormatter.parse(c.getString(TAG_AANMAAKDATUM)).getTime());
                         Taak t = new Taak(c.getInt(TAG_ID),
                                             c.getString(TAG_NAAM),
-                                            creation_date,
+                                            aanmaakDatum,
                                             TaskStatus.valueOf(c.getString(TAG_STATUS)));
 
                         // Filtercriteria checken
-                        if(!geslotenTaken && t.getStatus().equals(TaskStatus.DONE)) add = false;
-                        if(!gefaaldeTaken && t.getStatus().equals(TaskStatus.FAILED)) add = false;
+                        boolean add = true;
+                        switch (t.getStatus()){
+                            case DONE:
+                                if(!geslotenTaken) add = false;
+                                break;
+                            case FAILED:
+                                if(!gefaaldeTaken) add = false;
+                                break;
+                            default:
+                                add = true;
+                                break;
+                        }
 
                         // Toevoegen aan lijst
                         if(add) takenLijst.add(t);
@@ -379,7 +394,7 @@ public class TakenActivity extends BasisActivity {
          * Methode voor na uitvoering taak.
          * Update de UI door de ListView voor taken te herladen.
          * **/
-        protected void onPostExecute(int success) {
+        protected void onPostExecute(Integer success) {
 
             // pDialog sluiten
             pDialog.dismiss();

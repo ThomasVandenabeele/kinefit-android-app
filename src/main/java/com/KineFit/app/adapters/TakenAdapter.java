@@ -74,8 +74,8 @@ public class TakenAdapter extends ArrayAdapter<Taak> {
             TextView task_item_status = (TextView) v.findViewById(R.id.task_item_status);
             //endregion
 
-            DateFormat df = new SimpleDateFormat("H:mm");
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            DateFormat df = new SimpleDateFormat("HH:mm");
+            SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
 
             // Waarden toekennen aan de textViews.
             if (id != null){

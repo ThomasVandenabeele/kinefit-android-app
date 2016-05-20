@@ -187,8 +187,8 @@
             android:layout_height="wrap_content"
             android:text="Aanmaken"
             android:id="@+id/btnMaakLogging"
-            android:layout_alignParentBottom="true"
-            android:layout_alignEnd="@+id/txtTScore" />
+            android:layout_alignBottom="@+id/cbAndereDatum"
+            android:layout_alignRight="@+id/txtTScore"/>
 
         <CheckBox
             android:layout_width="wrap_content"
@@ -198,6 +198,15 @@
             android:layout_marginLeft="10dp"
             android:checked="false"
             android:layout_below="@+id/geselecteerdeDatum" />
+
+        <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Andere datum"
+            android:id="@+id/cbAndereDatum"
+            android:layout_marginLeft="10dp"
+            android:checked="false"
+            android:layout_below="@+id/cbVerschillendTijdstip" />
 
         <TextView
             android:layout_width="wrap_content"
