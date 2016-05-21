@@ -1,8 +1,7 @@
 
----
+
 <img align="left" width="250px" src="http://thomasvandenabeele.be/KineFit/logoFIIW.png">
 **Thomas Vandenabeele**
-
 3ABA Industriële Ingenieurswetenschappen<br/>
 2015-2016
 
@@ -37,13 +36,14 @@ Deze applicatie zou dan kunnen dienen als voorbeeld wat de mogelijkheden zijn va
 
 ## KineFit Applicatie
 
-<img src="http://thomasvandenabeele.be/KineFit/stap.png" alt="stap" width="200px" border="1">
-<img src="http://thomasvandenabeele.be/KineFit/taak.png" alt="taak" width="200px" border="1">
-<img src="http://thomasvandenabeele.be/KineFit/logs.png" alt="logging" width="200px" border="1">
+<img src="http://thomasvandenabeele.be/KineFit/app.png" alt="stap">
 
 Er kan ingelogd worden met volgende admin gebruiker in de applicatie:
 ```
-gebruikersnaam: apps
+gebruikersnaam: RuttenL
+```
+
+```
 wachtwoord: android
 ```
 
@@ -67,31 +67,27 @@ De applicatie voorziet dus 2 grote services die op de achtergrond van de applica
 
 Ik heb geopteerd om de database zo compact mogelijk te houden, doch met zoveel mogelijk structuur. Volgende figuur toont het ER-diagram van mijn gebruikte database:
 <br/><img src="http://thomasvandenabeele.be/KineFit/ER.png" alt="ER-diagram" width="500px"><br/>
-U kan een blik werpen in mijn database via PHPMyAdmin:
+U kan een blik werpen in mijn database via PHPMyAdmin: http://www.thomasvandenabeele.be/phpmyadmin
 ```
-http://www.thomasvandenabeele.be/phpmyadmin
-
 gebruikersnaam: apps
+```
+
+```
 wachtwoord: android
 ```
 
 ## REST Client
 
 Om te android applicatie te laten communiceren met de database heb ik een REST API geschreven in PHP. Hiermee kan via HTTP data opgehaald worden of gepost worden in de database. De data kan dan via JSON in de applicatie uitgelezen worden.
-De documentatie van de volledige API is via volgende url te vinden:
-```
-http://www.thomasvandenabeele.be/KineFit/doc/
-```
+De documentatie van de volledige API is via volgende url te vinden: http://www.thomasvandenabeele.be/KineFit/doc/
+
 
 ## WebClient
 
 Op vraag van het onderzoeksteam voorzie ik een kleine web applicatie waarop de onderzoekers overzichtelijk belangrijke data kunnen verzamelen van de patiënten. 
 <br/><img src="http://thomasvandenabeele.be/KineFit/webclient.png" alt="KineFit WebClient"><br/>
 Om wille van de korte tijd heb ik enkel de essentiële basis hierin geintegreerd. Zo kunnen onderzoekers momenteel enkel taken toekennen aan gebruikers. De gebruiker krijgt dan binnen de 10 minuten een melding van de nieuwe taak. Enkel admin gebruikers kunnen momenteel inloggen op deze webclient.
-De KineFit WebClient is voor admins te bereiken via volgende url (dezelfde inloggegevens als in applicatie):
-```
-http://www.thomasvandenabeele.be/KineFit/web/
-```
+De KineFit WebClient is voor admins te bereiken via volgende url (dezelfde inloggegevens als in applicatie): http://www.thomasvandenabeele.be/KineFit/web/
 
 ## Verbeteringen voor toekomst
 
