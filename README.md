@@ -3,7 +3,7 @@
 <img align="left" width="300px" src="http://thomasvandenabeele.be/KineFit/logoFIIW.png">
 **Thomas Vandenabeele**
 3ABA Industriële Ingenieurswetenschappen
-2015-2016<br/>
+2015-2016<br/><br/>
 
 ----
 
