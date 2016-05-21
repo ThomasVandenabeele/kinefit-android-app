@@ -66,11 +66,9 @@ De applicatie voorziet dus 2 grote services die op de achtergrond van de applica
 Ik heb geopteerd om de database zo compact mogelijk te houden, doch met zoveel mogelijk structuur. Volgende figuur toont het ER-diagram van mijn gebruikte database:
 <br/><img src="http://thomasvandenabeele.be/KineFit/ER.png" alt="ER-diagram" width="500px"><br/>
 U kan een blik werpen in mijn database via PHPMyAdmin: http://www.thomasvandenabeele.be/phpmyadmin
-```
-gebruikersnaam: apps
-```
 
 ```
+gebruikersnaam: apps
 wachtwoord: android
 ```
 
