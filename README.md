@@ -39,11 +39,9 @@ Deze applicatie zou dan kunnen dienen als voorbeeld wat de mogelijkheden zijn va
 <img src="http://thomasvandenabeele.be/KineFit/app.png" alt="stap">
 
 Er kan ingelogd worden met volgende admin gebruiker in de applicatie:
-```
-gebruikersnaam: RuttenL
-```
 
 ```
+gebruikersnaam: RuttenL
 wachtwoord: android
 ```
 
