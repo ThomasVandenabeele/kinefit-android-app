@@ -36,9 +36,6 @@ public class SessieManager {
     /** Instellingen modus: privaat */
     int PRIVATE_MODE = 0;
 
-    static PendingIntent pendingIntent;
-    static AlarmManager alarmManager;
-
     //endregion
 
     //region TAGS
@@ -87,8 +84,8 @@ public class SessieManager {
      * @param onthouden onthouden of niet
      */
     public void createLoginSession(String gebruikersnaam, String naam, String voornaam, String email, Boolean onthouden){
-        if(gebruikersnaam == null) return;
 
+        System.out.println("Doe login");
         editor.putBoolean(IS_LOGIN, true);
         editor.putString(KEY_GEBRUIKERSNAAM, gebruikersnaam);
         editor.putString(KEY_NAAM, naam);
@@ -112,7 +109,7 @@ public class SessieManager {
     public void checkLogin(){
 
         // Check login status
-        if(!this.isLoggedIn() && !isInternetBeschikbaar()){
+        if(!this.isLoggedIn() || !isInternetBeschikbaar()){
             // wanneer gebruiker niet is ingelogd --> naar loginpagina!
             startLoginActivity();
         }
@@ -130,12 +127,6 @@ public class SessieManager {
      * Log de gebruiker uit
      * */
     public void logoutUser(){
-
-        AlarmManager am = (AlarmManager) _context.getSystemService(Context.ALARM_SERVICE);
-        Intent downloader = new Intent(_context, StartTaakServiceOntvanger.class);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(_context, 10, downloader, 0);
-        am.cancel(pendingIntent);
-
         String rem = instellingen.getString(KEY_HERINNER_MIJ, null);
         editor.clear();
         if(rem != null) editor.putString(KEY_HERINNER_MIJ, rem);
@@ -192,7 +183,6 @@ public class SessieManager {
      * Start RegistreerStappen service
      */
     private void startStapService(){
-        setRecurringAlarm(_context);
         Intent i = new Intent(_context, RegistreerStappenService.class);
         _context.startService(i);
     }
@@ -205,27 +195,6 @@ public class SessieManager {
         ConnectivityManager connectivityManager = (ConnectivityManager) _context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
-    }
-
-    /**
-     * Stel herhalende alarm in.
-     * Momenteel om het kwartier.
-     * @param context de context
-     */
-    private void setRecurringAlarm(Context context) {
-
-        Calendar updateTime = Calendar.getInstance();
-        updateTime.setTimeZone(TimeZone.getDefault());
-        updateTime.set(Calendar.HOUR_OF_DAY, 12);
-        updateTime.set(Calendar.MINUTE, 30);
-        Intent downloader = new Intent(context, StartTaakServiceOntvanger.class);
-        downloader.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-
-        pendingIntent = PendingIntent.getBroadcast(context, 10, downloader, 0);
-        alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, updateTime.getTimeInMillis(), AlarmManager.INTERVAL_FIFTEEN_MINUTES, pendingIntent);
-
-
     }
 
 }

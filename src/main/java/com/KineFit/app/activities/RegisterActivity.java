@@ -90,6 +90,10 @@ public class RegisterActivity extends Activity {
 
     //endregion
 
+    /**
+     * Methode die opgeroepen wordt bij aanmaak activity.
+     * @param savedInstanceState
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

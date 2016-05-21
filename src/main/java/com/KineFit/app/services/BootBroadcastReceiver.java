@@ -7,7 +7,7 @@ import android.support.v4.content.WakefulBroadcastReceiver;
 
 /**
  * BootBroadcastReceiver
- * Zorgt ervoor dat het toestel niet terug in slaapstand gaat wanneer er iets uitgevoerd wordt.
+ * Bij boot van toestel wordt de stapActivity gestart.
  *
  * Created by Thomas on 22/04/16.
  * @author Thomas Vandenabeele
@@ -25,8 +25,6 @@ public class BootBroadcastReceiver extends WakefulBroadcastReceiver {
         // Start de step service
         Intent startServiceIntent = new Intent(context, RegistreerStappenService.class);
         startWakefulService(context, startServiceIntent);
-
-        System.out.println("onReceive("+intent+")");
 
         // Kijk of scherm uit gaat
         if (!intent.getAction().equals(Intent.ACTION_SCREEN_OFF)) {

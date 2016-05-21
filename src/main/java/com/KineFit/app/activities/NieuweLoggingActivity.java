@@ -234,7 +234,6 @@ public class NieuweLoggingActivity extends BasisActivity {
 
                         // Validatie
                         boolean fout = false;
-
                         if(isLeeg(beschrijving)){
                             fout = true;
                             beschrijving.setError("Geef een beschrijving!");

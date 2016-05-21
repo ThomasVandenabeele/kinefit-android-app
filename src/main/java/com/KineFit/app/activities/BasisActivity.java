@@ -1,7 +1,9 @@
 package com.KineFit.app.activities;
 
 import android.app.Activity;
+import android.app.AlarmManager;
 import android.app.AlertDialog;
+import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -13,9 +15,11 @@ import android.provider.Settings;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.KineFit.app.R;
 import com.KineFit.app.services.SessieManager;
+import com.KineFit.app.services.StartTaakServiceOntvanger;
 
 /**
  * Basisactivity om de actionbar op iedere pagina hetzelfde te maken.
@@ -27,8 +31,21 @@ import com.KineFit.app.services.SessieManager;
  */
 public class BasisActivity extends Activity{
 
+    //region DATAMEMBERS
+
     /** SessieManager voor login, logout, ingelogde gebruiker enz. */
     protected SessieManager sessie;
+
+    /** Intent voor de alarmservice */
+    protected PendingIntent pendingIntent;
+
+    /** De alarmmanager */
+    protected AlarmManager manager;
+
+    /** Is alarm opgezet? */
+    protected boolean alarmSet = false;
+
+    //endregion
 
     /**
      * Methode die opgeroepen wordt bij aanmaak activity.
@@ -42,6 +59,9 @@ public class BasisActivity extends Activity{
 
         // Kijk of er een ingelogde gebruiker is, anders naar loginscherm.
         sessie.checkLogin();
+
+        Intent alarmIntent = new Intent(this, StartTaakServiceOntvanger.class);
+        pendingIntent = PendingIntent.getBroadcast(this, 0, alarmIntent, 0);
     }
 
     /**
@@ -66,11 +86,35 @@ public class BasisActivity extends Activity{
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.actie_loguit:
+
+                cancelAlarm();
+
                 // Log de ingelogde gebruiker uit, terug naar loginscherm.
                 sessie.logoutUser();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
+        }
+    }
+
+    /**
+     * Start de alarm service voor notificaties
+     */
+    protected void startAlarm() {
+        manager = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
+        long interval = 600000;
+        manager.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), interval, pendingIntent);
+        Toast.makeText(this, "Meldingen aan", Toast.LENGTH_SHORT).show();
+    }
+
+    /**
+     * Stopt de alarm service voor notificaties
+     */
+    protected void cancelAlarm() {
+        if (manager != null) {
+            alarmSet = false;
+            manager.cancel(pendingIntent);
+            Toast.makeText(this, "Meldingen stopgezet", Toast.LENGTH_SHORT).show();
         }
     }
 

@@ -18,10 +18,19 @@ import android.widget.Toast;
 
 import com.KineFit.app.R;
 import com.KineFit.app.activities.DashboardActivity;
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.AsyncHttpResponseHandler;
+import com.loopj.android.http.JsonHttpResponseHandler;
+import com.loopj.android.http.RequestParams;
+import com.loopj.android.http.SyncHttpClient;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
+
+import cz.msebera.android.httpclient.Header;
 
 /**
  * Service om te kijken voor nieuwe taken.
@@ -35,6 +44,12 @@ public class TaakService extends IntentService {
 
     /** SessieManager voor gebruikerinfo */
     private SessieManager sessie;
+
+    /** SyncHttpClient voor service */
+    private AsyncHttpClient aClient = new SyncHttpClient();
+
+    /*+ De huidige context */
+    private Context _context;
 
     //endregion
 
@@ -76,12 +91,7 @@ public class TaakService extends IntentService {
         // Instantiëer SessieManager
         sessie = new SessieManager(getApplicationContext());
 
-        ContentValues params = new ContentValues();
-        params.put(TAG_GEBRUIKERSNAAM, sessie.getUsername());
-
-        // Voer async task uit
-        new TelNieuweTaken(this).execute(params);
-
+        _context = getApplicationContext();
     }
 
 
@@ -91,6 +101,30 @@ public class TaakService extends IntentService {
      */
     @Override
     protected void onHandleIntent(Intent intent) {
+
+        // Kijk voor nieuwe taken.
+        aClient.get(url_get_nieuwe_taken, new RequestParams(TAG_GEBRUIKERSNAAM, sessie.getUsername()), new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                int aantalTaken = 0;
+                // If the response is JSONObject instead of expected JSONArray
+                System.out.println("Taken ophalen gelukt:" + response.toString());
+
+                try{
+                    if (response.getInt(TAG_SUCCES) == 1) {
+                        aantalTaken = response.getInt(TAG_AANTALTAKEN);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+                stuurNotificatie(_context, aantalTaken);
+            }
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONArray timeline) { }
+
+        });
     }
 
     /**
@@ -125,50 +159,6 @@ public class TaakService extends IntentService {
             NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
             mNotificationManager.notify(1, notificationBuilder.build());
 
-        }
-
-    }
-
-
-    /**
-     * Async Taak op achtergrond om het aantal ongelezen taken op te halen en weer te geven.
-     * Via HTTP Request naar REST client.
-     * */
-    class TelNieuweTaken extends AsyncTask<ContentValues, String, Integer> {
-
-        private Context c;
-
-        public TelNieuweTaken(Context c){
-            this.c = c;
-        }
-        /**
-         * Deze methode wordt in de achtergrond uitgevoerd.
-         * @param params ContentValues voor de REST client.
-         * @return aantal nieuwe taken
-         */
-        protected Integer doInBackground(ContentValues... params) {
-
-            // Maakt de request en geeft het resultaat
-            JSONObject json = jsonParser.makeHttpRequest(url_get_nieuwe_taken, "GET", params[0]);
-            Log.d("Aantal nieuwe taken: ", json.toString());
-
-            try{
-                if (json.getInt(TAG_SUCCES) == 1) {
-                    return json.getInt(TAG_AANTALTAKEN);
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-            return 0;
-        }
-
-        /**
-         * Methode voor na uitvoering taak.
-         * Stuur notificatie
-         * **/
-        protected void onPostExecute(Integer aantal) {
-            stuurNotificatie(c, aantal);
         }
 
     }

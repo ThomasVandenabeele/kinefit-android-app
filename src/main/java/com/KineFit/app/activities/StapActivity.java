@@ -491,7 +491,12 @@ public class StapActivity extends BasisActivity {
 
     }
 
-
+    /**
+     * Haal Entry uit Map via de positie.
+     * @param map gegeven Map
+     * @param i positie
+     * @return entry in map op positie i
+     */
     public Map.Entry<Date, Integer> getEntry(Map<Date, Integer> map, int i)
     {
         Set<Map.Entry<Date, Integer>> entries = map.entrySet();

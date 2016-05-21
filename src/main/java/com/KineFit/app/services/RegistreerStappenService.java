@@ -12,9 +12,17 @@ import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.JsonHttpResponseHandler;
+import com.loopj.android.http.RequestParams;
+import com.loopj.android.http.SyncHttpClient;
+
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
+
+import cz.msebera.android.httpclient.Header;
 
 /**
  * Service om de stappen te registreren
@@ -43,6 +51,9 @@ public class RegistreerStappenService extends IntentService implements SensorEve
 
     /** SessieManager voor gebruikerinfo */
     private SessieManager sessie;
+
+    /** AsyncHttpClient voor service */
+    private AsyncHttpClient aClient = new AsyncHttpClient();
 
     //endregion
 
@@ -105,7 +116,6 @@ public class RegistreerStappenService extends IntentService implements SensorEve
         startTijdMillis = System.currentTimeMillis();
     }
 
-
     /**
      * Opgeroepen op de werkende thread.
      * @param intent nodige intent
@@ -148,13 +158,19 @@ public class RegistreerStappenService extends IntentService implements SensorEve
             String starttijd = df.format(startTijdMillis);
             String eindtijd = timestamp;
 
-            ContentValues parameters = new ContentValues();
+            RequestParams parameters = new RequestParams();
             parameters.put(TAG_GEBRUIKERSNAAM, sessie.getUsername());
             parameters.put( TAG_AANTALSTAPPEN, aantalStappen);
             parameters.put(TAG_STARTTIJD, starttijd);
             parameters.put(TAG_EINDTIJD, eindtijd);
 
-            new RegisterSteps().execute(parameters);
+            aClient.post(url_steps, parameters, new JsonHttpResponseHandler(){
+                @Override
+                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {}
+
+                @Override
+                public void onSuccess(int statusCode, Header[] headers, JSONArray timeline) { }
+            });
 
             startTijdMillis = System.currentTimeMillis();
         }

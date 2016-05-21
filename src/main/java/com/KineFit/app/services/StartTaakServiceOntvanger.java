@@ -23,8 +23,8 @@ public class StartTaakServiceOntvanger extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         System.out.println("----------------START TAAK OPHALEN---------------");
-        Intent dailyUpdater = new Intent(context, TaakService.class);
-        context.startService(dailyUpdater);
+        Intent i = new Intent(context, TaakService.class);
+        context.startService(i);
 
     }
 

@@ -50,7 +50,9 @@
 
         <activity
             android:name=".activities.RegisterActivity"
-            android:label="KineFit"></activity>
+            android:label="KineFit">
+
+        </activity>
 
         <receiver
             android:name=".services.BootBroadcastReceiver">
@@ -63,12 +65,17 @@
             android:name=".services.RegistreerStappenService"
             android:exported="false"/>
 
-        <service android:name=".services.TaakService" ></service>
-        <receiver android:name=".services.StartTaakServiceOntvanger" ></receiver>
+        <receiver
+            android:name=".services.StartTaakServiceOntvanger"
+            android:process=":remote" >
+        </receiver>
+
+        <service
+            android:name=".services.TaakService"
+            android:exported="false" />
 
 
 
     </application>
-    <!--  Internet Permissions -->
 
 </manifest>

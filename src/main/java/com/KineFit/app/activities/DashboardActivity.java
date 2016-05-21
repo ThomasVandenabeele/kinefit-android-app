@@ -1,5 +1,6 @@
 package com.KineFit.app.activities;
 
+import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -12,9 +13,11 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.KineFit.app.R;
 import com.KineFit.app.services.JSONParser;
+import com.KineFit.app.services.StartTaakServiceOntvanger;
 
 import org.json.JSONObject;
 
@@ -43,6 +46,8 @@ public class DashboardActivity extends BasisActivity {
 
     /** Boolean om eerste lading te checken */
     private Boolean eersteKeer = true;
+
+
 
     //endregion
 
@@ -125,17 +130,22 @@ public class DashboardActivity extends BasisActivity {
 
         });
 
+
+        if(sessie.isLoggedIn() && !alarmSet) {
+            // Start alarm
+            startAlarm();
+            alarmSet=true;
+        }
+
     }
 
 
     /**
-     * Kijk voor nieuwe taken bij herstarten activitykjbjk
+     * Kijk voor nieuwe taken bij herstarten activity
      */
     @Override
     protected void onResume() {
         super.onResume();
-
-        System.out.println("opnieuw");
 
         // Als er ingelogde gebruiker is: tel ongelezen taken (async taak).
         if(sessie.isLoggedIn()) {
